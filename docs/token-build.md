@@ -46,7 +46,7 @@ Each token file starts with a `$extensions` block describing its Figma collectio
 
 Every conversion is chosen by token type and category, and anything without a defined conversion stops the build. The build uses only its own transforms, not Style Dictionary's `css` transform group, so nothing is converted that CLAUDE.md doesn't ask for.
 
-The fallback stack (`system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`) is a code convention, not a Figma value.
+The fallback stack (`system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`) is specified in CLAUDE.md, not Figma. `tokens:check` fails if the CSS uses a different one.
 
 ## The Figma check
 

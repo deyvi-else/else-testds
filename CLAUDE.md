@@ -56,7 +56,7 @@ To change a token, change it in Figma and re-export. Never edit generated files 
   - Font size and line height in rem
   - Font weight as the exact numeric weight Figma renders, including variable weight axis values (e.g. 510, 590). Never map from the style name
   - Letter spacing: Figma stores a percentage of font size. Output in em (`2%` becomes `0.02em`)
-  - Font is Inter, loaded from Google Fonts with a system sans-serif fallback stack
+  - Font is Inter, loaded from Google Fonts as a variable font covering the full weight range. Fallback stack: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
   - Components apply typography by referencing these properties in their CSS Modules
 - **Effects:** None currently. If effect styles are added in Figma, include them in the export
 

@@ -27,6 +27,8 @@ const raw = JSON.parse(readFileSync(join(ROOT, 'scripts/figma-export/figma-raw.j
 const css = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8');
 
 const REM_BASE = 16;
+// The font fallback stack specified in CLAUDE.md (not a Figma value).
+const FONT_FALLBACK = ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'];
 const MODES = ['light', 'dark'];
 const SELECTORS = { root: ':root', dark: '[data-theme="dark"]' };
 // Hex output rounds each channel to 8 bits, so allow half a step.
@@ -304,7 +306,10 @@ for (const mode of MODES) {
       if (families[0] !== style.fontName.family) {
         return `first family "${families[0]}" doesn't match Figma "${style.fontName.family}"`;
       }
-      if (families.at(-1) !== 'sans-serif') return 'fallback stack should end with sans-serif';
+      const fallback = families.slice(1);
+      if (fallback.join(', ') !== FONT_FALLBACK.join(', ')) {
+        return `fallback stack "${fallback.join(', ')}" doesn't match CLAUDE.md "${FONT_FALLBACK.join(', ')}"`;
+      }
     });
 
     const remPx = (property, figmaPx) =>

@@ -38,7 +38,7 @@ const BLOCKS = [
 ];
 
 // Font is Inter (from Figma), followed by a system sans-serif fallback stack.
-// The fallback stack is a code convention from CLAUDE.md, not a Figma value.
+// The fallback stack is specified in CLAUDE.md, not Figma. Keep the two in sync.
 const FONT_FALLBACK = 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 // --- Parsing ---------------------------------------------------------------

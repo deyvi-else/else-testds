@@ -47,7 +47,7 @@ See [token-build.md](token-build.md) for the build and the Figma check.
 
 **A fully transparent colour loses its hue in the browser.** `border/invisible` is black at 0% in light mode and white at 0% in dark mode. Browsers resolve both to `color(srgb 0 0 0 / 0)`. They look identical, and the CSS still references the right primitives, but the Figma check can only compare alpha for these.
 
-**The font fallback stack isn't in Figma.** CLAUDE.md asks for a system sans-serif fallback stack without saying which. The build uses `system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`.
+**The font fallback stack isn't in Figma.** CLAUDE.md originally asked for a system sans-serif fallback stack without saying which. The build chose `system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`. **Resolved:** CLAUDE.md now specifies that exact stack, and that Inter loads as a variable font covering the full weight range (already the case: `wght@100..900`). `tokens:check` now compares the full stack, not just the final `sans-serif`.
 
 **Typography order differs from Figma.** Figma lists `headline/300`, `200`, `100`. Style names ending in numbers become integer-like JSON keys, which JavaScript always orders numerically, so the CSS lists 100, 200, 300. Only the order changes, not the values.
 
