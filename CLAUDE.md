@@ -54,9 +54,9 @@ To change a token, change it in Figma and re-export. Never edit generated files 
 - **Token names and groups:** A token name must never also be the start of another token's name (e.g. `secondary` and `secondary/hover`). DTCG JSON can't represent a value that is also a group. Use an explicit name for the default, such as `secondary/default`
 - **Typography:** Defined by Figma text styles only, not variables. Each text style outputs one custom property per value, named `--testds-typography-<text style name>-<property>`, where property is `font-family`, `font-size`, `font-weight`, `line-height` or `letter-spacing`. Text style names are converted to kebab-case, with `/` becoming `-` (`headline/300` becomes `headline-300`)
   - Font size and line height in rem
-  - Font weight as a number, mapped from the Figma style name (`Regular` 400, `Medium` 500)
+  - Font weight as the exact numeric weight Figma renders, including variable weight axis values (e.g. 510, 590). Never map from the style name
   - Letter spacing: Figma stores a percentage of font size. Output in em (`2%` becomes `0.02em`)
-  - Font is Inter, loaded from Google Fonts with a system sans-serif fallback stack
+  - Font is Inter, loaded from Google Fonts as a variable font covering the full weight range. Fallback stack: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
   - Components apply typography by referencing these properties in their CSS Modules
 - **Effects:** None currently. If effect styles are added in Figma, include them in the export
 

@@ -1,0 +1,177 @@
+{
+  "$extensions": {
+    "com.figma": {
+      "fileKey": "kDoLf0s6Vdeg8dS8cgi1ro",
+      "source": "text styles"
+    }
+  },
+  "headline": {
+    "100": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 15,
+          "unit": "px"
+        },
+        "fontWeight": 510,
+        "lineHeight": {
+          "value": 24,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "value": 0,
+          "unit": "%"
+        }
+      },
+      "$extensions": {
+        "com.figma": {
+          "styleId": "S:ab8bcb83056847f232530faa231eaf14a2326b6a,",
+          "styleKey": "ab8bcb83056847f232530faa231eaf14a2326b6a",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium",
+            "variationSettings": {
+              "slnt": 0,
+              "wght": 510
+            }
+          }
+        }
+      }
+    },
+    "200": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 20,
+          "unit": "px"
+        },
+        "fontWeight": 590,
+        "lineHeight": {
+          "value": 28,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "value": 0,
+          "unit": "%"
+        }
+      },
+      "$extensions": {
+        "com.figma": {
+          "styleId": "S:f539a23e89d0a9a20f51b0bfe93f6239c1863cd3,",
+          "styleKey": "f539a23e89d0a9a20f51b0bfe93f6239c1863cd3",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium",
+            "variationSettings": {
+              "slnt": 0,
+              "wght": 590
+            }
+          }
+        }
+      }
+    },
+    "300": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 40,
+          "unit": "px"
+        },
+        "fontWeight": 590,
+        "lineHeight": {
+          "value": 44,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "value": 0,
+          "unit": "%"
+        }
+      },
+      "$extensions": {
+        "com.figma": {
+          "styleId": "S:a84ab6a6545c412899f63c8aa755831e3e10b977,",
+          "styleKey": "a84ab6a6545c412899f63c8aa755831e3e10b977",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium",
+            "variationSettings": {
+              "slnt": 0,
+              "wght": 590
+            }
+          }
+        }
+      }
+    }
+  },
+  "body": {
+    "100": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 13,
+          "unit": "px"
+        },
+        "fontWeight": 400,
+        "lineHeight": {
+          "value": 21,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "value": 0,
+          "unit": "%"
+        }
+      },
+      "$extensions": {
+        "com.figma": {
+          "styleId": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
+          "styleKey": "f062a5f74b2ca12ae69c024369079e9220e2b031",
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular",
+            "variationSettings": {
+              "wght": 400,
+              "slnt": 0
+            }
+          }
+        }
+      }
+    },
+    "200": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 15,
+          "unit": "px"
+        },
+        "fontWeight": 400,
+        "lineHeight": {
+          "value": 24,
+          "unit": "px"
+        },
+        "letterSpacing": {
+          "value": 0,
+          "unit": "%"
+        }
+      },
+      "$extensions": {
+        "com.figma": {
+          "styleId": "S:61bd68150acd393a13d1e97ff93c11cba02e8ba8,",
+          "styleKey": "61bd68150acd393a13d1e97ff93c11cba02e8ba8",
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular",
+            "variationSettings": {
+              "wght": 400,
+              "slnt": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

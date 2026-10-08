@@ -1,0 +1,157 @@
+{
+  "$extensions": {
+    "com.figma": {
+      "fileKey": "kDoLf0s6Vdeg8dS8cgi1ro",
+      "collection": "Semantics",
+      "collectionId": "VariableCollectionId:2:4529",
+      "mode": "light",
+      "modeId": "2:2",
+      "isDefaultMode": true
+    }
+  },
+  "testds": {
+    "semantic": {
+      "color": {
+        "background": {
+          "primary": {
+            "$type": "color",
+            "$value": "{testds.primitive.color.neutral.1}",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4530",
+                "variableKey": "97f08d74d31328254768cb777987ced4acbba66e",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          },
+          "secondary": {
+            "default": {
+              "$type": "color",
+              "$value": {
+                "color": "{testds.primitive.color.neutral.9}",
+                "opacity": "{testds.primitive.opacity.2}"
+              },
+              "$extensions": {
+                "com.figma": {
+                  "variableId": "VariableID:4:54",
+                  "variableKey": "b77e4e7448c7b6f4f3693fd6e4e951137d017e5d",
+                  "scopes": [
+                    "ALL_SCOPES"
+                  ]
+                }
+              }
+            },
+            "hover": {
+              "$type": "color",
+              "$value": {
+                "color": "{testds.primitive.color.neutral.9}",
+                "opacity": "{testds.primitive.opacity.3}"
+              },
+              "$extensions": {
+                "com.figma": {
+                  "variableId": "VariableID:5:223",
+                  "variableKey": "092ae1b909956b5f4466ba3681d69cbd3939c636",
+                  "scopes": [
+                    "ALL_SCOPES"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "border": {
+          "invisible": {
+            "$type": "color",
+            "$value": {
+              "color": "{testds.primitive.color.neutral.9}",
+              "opacity": "{testds.primitive.opacity.1}"
+            },
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4573",
+                "variableKey": "ae24326550fd3e5e87a362b2ca9458c989987fff",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          },
+          "standard": {
+            "$type": "color",
+            "$value": {
+              "color": "{testds.primitive.color.neutral.9}",
+              "opacity": "{testds.primitive.opacity.4}"
+            },
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4531",
+                "variableKey": "34e994ace6dc6cea9dd1fda406d6ff09fa05c072",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          }
+        },
+        "text": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{testds.primitive.color.neutral.5}",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4575",
+                "variableKey": "338925fde7b515f2457b7d5045bf0e299f1250d5",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          },
+          "standard": {
+            "$type": "color",
+            "$value": "{testds.primitive.color.neutral.6}",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4576",
+                "variableKey": "a11f23766998ef13efe63299440c43f20d77fb6f",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          },
+          "strong": {
+            "$type": "color",
+            "$value": "{testds.primitive.color.neutral.7}",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4577",
+                "variableKey": "ece8ad1fa5efc04cebb8c06620123ae79713f738",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          }
+        },
+        "icon": {
+          "strong": {
+            "$type": "color",
+            "$value": "{testds.primitive.color.neutral.7}",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:2:4597",
+                "variableKey": "3e5716d91e2d3258dc61c9b55fc73f90d568cb93",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

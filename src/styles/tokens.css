@@ -1,4 +1,84 @@
 /**
  * Do not edit directly, this file was auto-generated.
- * No tokens exported from Figma yet.
  */
+
+:root {
+  --testds-primitive-color-neutral-1: #ffffff;
+  --testds-primitive-color-neutral-2: #f7f8f8;
+  --testds-primitive-color-neutral-3: #d0d6e0;
+  --testds-primitive-color-neutral-4: #8a8f98;
+  --testds-primitive-color-neutral-5: #6f6e77;
+  --testds-primitive-color-neutral-6: #3c4149;
+  --testds-primitive-color-neutral-7: #282a30;
+  --testds-primitive-color-neutral-8: #08090a;
+  --testds-primitive-color-neutral-9: #000000;
+  --testds-primitive-opacity-1: 0;
+  --testds-primitive-opacity-2: 0.02;
+  --testds-primitive-opacity-3: 0.05;
+  --testds-primitive-opacity-4: 0.08;
+  --testds-primitive-opacity-5: 0.11;
+  --testds-primitive-border-radius-1: 16px;
+  --testds-primitive-border-width-1: 1px;
+  --testds-primitive-space-1: 0.125rem;
+  --testds-primitive-space-2: 0.25rem;
+  --testds-primitive-space-3: 0.5rem;
+  --testds-primitive-space-4: 0.75rem;
+  --testds-primitive-space-5: 1rem;
+  --testds-primitive-space-6: 1.25rem;
+  --testds-primitive-space-7: 1.5rem;
+  --testds-primitive-space-8: 2rem;
+  --testds-primitive-space-9: 2.5rem;
+  --testds-primitive-space-10: 3rem;
+  --testds-primitive-space-11: 3.5rem;
+  --testds-primitive-space-12: 4rem;
+  --testds-primitive-space-13: 4.5rem;
+  --testds-primitive-space-14: 5rem;
+  --testds-primitive-space-15: 5.5rem;
+  --testds-primitive-space-16: 6rem;
+  --testds-semantic-color-background-primary: var(--testds-primitive-color-neutral-1);
+  --testds-semantic-color-background-secondary-default: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-2) * 100%), transparent);
+  --testds-semantic-color-background-secondary-hover: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-3) * 100%), transparent);
+  --testds-semantic-color-border-invisible: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-1) * 100%), transparent);
+  --testds-semantic-color-border-standard: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-4) * 100%), transparent);
+  --testds-semantic-color-text-subtle: var(--testds-primitive-color-neutral-5);
+  --testds-semantic-color-text-standard: var(--testds-primitive-color-neutral-6);
+  --testds-semantic-color-text-strong: var(--testds-primitive-color-neutral-7);
+  --testds-semantic-color-icon-strong: var(--testds-primitive-color-neutral-7);
+  --testds-typography-headline-100-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-headline-100-font-size: 0.9375rem;
+  --testds-typography-headline-100-font-weight: 510;
+  --testds-typography-headline-100-line-height: 1.5rem;
+  --testds-typography-headline-100-letter-spacing: 0em;
+  --testds-typography-headline-200-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-headline-200-font-size: 1.25rem;
+  --testds-typography-headline-200-font-weight: 590;
+  --testds-typography-headline-200-line-height: 1.75rem;
+  --testds-typography-headline-200-letter-spacing: 0em;
+  --testds-typography-headline-300-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-headline-300-font-size: 2.5rem;
+  --testds-typography-headline-300-font-weight: 590;
+  --testds-typography-headline-300-line-height: 2.75rem;
+  --testds-typography-headline-300-letter-spacing: 0em;
+  --testds-typography-body-100-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-body-100-font-size: 0.8125rem;
+  --testds-typography-body-100-font-weight: 400;
+  --testds-typography-body-100-line-height: 1.3125rem;
+  --testds-typography-body-100-letter-spacing: 0em;
+  --testds-typography-body-200-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-body-200-font-size: 0.9375rem;
+  --testds-typography-body-200-font-weight: 400;
+  --testds-typography-body-200-line-height: 1.5rem;
+  --testds-typography-body-200-letter-spacing: 0em;
+}
+
+[data-theme="dark"] {
+  --testds-semantic-color-background-primary: var(--testds-primitive-color-neutral-8);
+  --testds-semantic-color-background-secondary-default: color-mix(in srgb, var(--testds-primitive-color-neutral-1) calc(var(--testds-primitive-opacity-3) * 100%), transparent);
+  --testds-semantic-color-background-secondary-hover: color-mix(in srgb, var(--testds-primitive-color-neutral-1) calc(var(--testds-primitive-opacity-4) * 100%), transparent);
+  --testds-semantic-color-border-invisible: color-mix(in srgb, var(--testds-primitive-color-neutral-1) calc(var(--testds-primitive-opacity-1) * 100%), transparent);
+  --testds-semantic-color-border-standard: color-mix(in srgb, var(--testds-primitive-color-neutral-1) calc(var(--testds-primitive-opacity-5) * 100%), transparent);
+  --testds-semantic-color-text-subtle: var(--testds-primitive-color-neutral-4);
+  --testds-semantic-color-text-standard: var(--testds-primitive-color-neutral-3);
+  --testds-semantic-color-text-strong: var(--testds-primitive-color-neutral-2);
+  --testds-semantic-color-icon-strong: var(--testds-primitive-color-neutral-2);
+}

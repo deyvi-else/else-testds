@@ -8,7 +8,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "tokens:export": "node scripts/figma-export/to-dtcg.mjs",
+    "tokens:check": "node scripts/figma-export/check-css.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",
