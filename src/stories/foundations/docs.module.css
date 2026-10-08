@@ -157,21 +157,12 @@
 
 /* --- Swatches --- */
 
-.swatch,
-.backdrops {
+.swatch {
   box-sizing: border-box;
+  display: flex;
   width: 6rem;
   height: var(--testds-primitive-space-12);
   border: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
-}
-
-.backdrops {
-  display: flex;
-}
-
-.backdrop {
-  flex: 1;
-  display: flex;
 }
 
 .swatchFill {
@@ -205,12 +196,8 @@
 
 /* --- Opacity --- */
 
-.opacityBackdrops {
-  display: flex;
-  gap: var(--testds-primitive-space-3);
-}
-
 .opacityBackdrop {
+  display: inline-block;
   padding: var(--testds-primitive-space-3);
   border: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
 }

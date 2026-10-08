@@ -142,18 +142,16 @@ export const semanticColorGroups = (mode: Mode) => {
   return [...groups.entries()].map(([property, tokens]) => ({ property, tokens }));
 };
 
-export const hasOpacity = (token: RawToken) => isColorWithOpacity(token.value);
-
 /**
- * The opaque background colours, in every mode. Transparent colours are drawn
- * on these so the transparency shows. Each is painted with its semantic token
- * inside a [data-theme] section for its mode.
+ * The page background: the opaque background colour. Swatches are drawn on it,
+ * so colours with transparency show as they would on the page. Its path is the
+ * same in every mode, so var() gives the value for the mode it's used in.
  */
-export const backdrops = modes.flatMap((mode) =>
-  mode.tokens
-    .filter((t) => t.path[2] === 'color' && t.path[3] === 'background' && !isColorWithOpacity(t.value))
-    .map((token) => ({ mode, token })),
+const pageBackgroundToken = defaultMode.tokens.find(
+  (t) => t.path[2] === 'color' && t.path[3] === 'background' && !isColorWithOpacity(t.value),
 );
+if (!pageBackgroundToken) throw new Error('No opaque semantic background colour to draw swatches on');
+export const pageBackground = pageBackgroundToken.path;
 
 // --- Figma values -----------------------------------------------------------------
 
