@@ -3,6 +3,10 @@
 // the pages update after every export. Values shown as "CSS" and everything
 // drawn on the pages come from tokens.css in the browser, not from this file.
 
+import { cssVar, figmaName, referencePath, typographyPath } from '../../../scripts/token-names.mjs';
+
+export { cssVar, figmaName };
+
 type Json = Record<string, unknown>;
 
 interface FileMeta {
@@ -21,10 +25,15 @@ export interface RawToken {
   path: string[];
   type: string;
   value: unknown;
+  /** The token's `com.figma` extension */
+  figma: Json;
 }
 
 const flatten = (node: Json, path: string[] = []): RawToken[] => {
-  if ('$type' in node) return [{ path, type: node.$type as string, value: node.$value }];
+  if ('$type' in node) {
+    const figma = ((node.$extensions as Json | undefined)?.['com.figma'] ?? {}) as Json;
+    return [{ path, type: node.$type as string, value: node.$value, figma }];
+  }
   return Object.entries(node)
     .filter(([key]) => !key.startsWith('$'))
     .flatMap(([key, child]) => flatten(child as Json, [...path, key]));
@@ -43,21 +52,6 @@ const tokenFiles: TokenFile[] = Object.values(files).map((json) => {
 
 const level = (token: RawToken) => token.path[1];
 
-// --- Names -------------------------------------------------------------------
-
-// Same naming as style-dictionary.config.mjs. If the two ever drift, the
-// pages show the token as missing from tokens.css (see useCssValue).
-const kebab = (segment: string) =>
-  segment
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[\s_/]+/g, '-')
-    .toLowerCase();
-
-export const cssVar = (path: string[]) => `--${path.map(kebab).join('-')}`;
-
-/** Figma variable and text style names use `/` between groups */
-export const figmaName = (path: string[]) => path.join('/');
-
 // --- References ----------------------------------------------------------------
 
 export interface Reference {
@@ -66,18 +60,17 @@ export interface Reference {
   path: string[];
 }
 
-const REFERENCE = /^\{([^{}]+)\}$/;
 const parseReference = (ref: unknown): string[] => {
-  const match = typeof ref === 'string' ? REFERENCE.exec(ref) : null;
-  if (!match) throw new Error(`Expected a reference, got ${JSON.stringify(ref)}`);
-  return match[1].split('.');
+  const path = referencePath(ref);
+  if (!path) throw new Error(`Expected a reference, got ${JSON.stringify(ref)}`);
+  return path;
 };
 
 const isColorWithOpacity = (value: unknown): value is { color: string; opacity: string } =>
   typeof value === 'object' && value !== null && 'color' in value && 'opacity' in value;
 
 export const references = (token: RawToken): Reference[] => {
-  if (typeof token.value === 'string') return [{ path: parseReference(token.value) }];
+  if (typeof token.value === 'string' && referencePath(token.value)) return [{ path: parseReference(token.value) }];
   if (isColorWithOpacity(token.value)) {
     return [
       { role: 'Colour', path: parseReference(token.value.color) },
@@ -98,7 +91,7 @@ const primitiveAt = (path: string[]) => {
   return token;
 };
 
-/** Primitive tokens of one category (`color`, `opacity`, `space`, `border`) */
+/** Primitive tokens of one category (`color`, `opacity`, `space`, `border`, `font`) */
 export const primitives = (category: string) => primitiveTokens.filter((t) => t.path[2] === category);
 
 // --- Semantics -----------------------------------------------------------------
@@ -123,8 +116,12 @@ export const defaultMode = modes[0];
 
 export const modeNamed = (name: string) => modes.find((mode) => mode.name === name) ?? defaultMode;
 
-/** Attributes that switch an element to a mode, matching tokens.css */
-export const modeAttributes = (mode: Mode) => (mode.isDefault ? {} : { 'data-theme': mode.name });
+/**
+ * Attributes that switch an element to a mode, matching tokens.css. Every
+ * mode, including the default, has a [data-theme] selector, so a section can
+ * be put in any mode inside any other.
+ */
+export const modeAttributes = (mode: Mode) => ({ 'data-theme': mode.name });
 
 /** Semantic tokens that reference a primitive, in each mode */
 export const usedBy = (path: string[]) =>
@@ -148,15 +145,14 @@ export const semanticColorGroups = (mode: Mode) => {
 export const hasOpacity = (token: RawToken) => isColorWithOpacity(token.value);
 
 /**
- * The opaque background colours of every mode, as the primitive each one
- * references. Transparent colours are drawn on these so the transparency
- * shows. Primitives are used because a mode's semantic values can't be
- * reached from inside another mode (light values only exist on :root).
+ * The opaque background colours, in every mode. Transparent colours are drawn
+ * on these so the transparency shows. Each is painted with its semantic token
+ * inside a [data-theme] section for its mode.
  */
 export const backdrops = modes.flatMap((mode) =>
   mode.tokens
-    .filter((t) => t.path[2] === 'color' && t.path[3] === 'background' && typeof t.value === 'string')
-    .map((token) => ({ mode, token, primitive: references(token)[0].path })),
+    .filter((t) => t.path[2] === 'color' && t.path[3] === 'background' && !isColorWithOpacity(t.value))
+    .map((token) => ({ mode, token })),
 );
 
 // --- Figma values -----------------------------------------------------------------
@@ -176,17 +172,16 @@ const formatLiteral = (token: RawToken): string => {
   }
   if (token.type === 'number') return token.path[2] === 'opacity' ? percent(token.value as number) : String(token.value);
   if (token.type === 'dimension') return `${value.value}${value.unit}`;
+  if (token.type === 'fontFamily') return String(token.value);
   return JSON.stringify(token.value);
 };
 
+const resolve = (value: unknown) => figmaValue(primitiveAt(parseReference(value)));
+
 /** The token's value as Figma stores it, with references resolved */
 export const figmaValue = (token: RawToken): string => {
-  if (typeof token.value === 'string') return figmaValue(primitiveAt(parseReference(token.value)));
-  if (isColorWithOpacity(token.value)) {
-    const color = figmaValue(primitiveAt(parseReference(token.value.color)));
-    const opacity = figmaValue(primitiveAt(parseReference(token.value.opacity)));
-    return `${color} at ${opacity}`;
-  }
+  if (references(token).length === 1) return resolve(token.value);
+  if (isColorWithOpacity(token.value)) return `${resolve(token.value.color)} at ${resolve(token.value.opacity)}`;
   return formatLiteral(token);
 };
 
@@ -198,6 +193,7 @@ interface Dimension {
 }
 
 interface TypographyValue {
+  /** A reference to a font family primitive */
   fontFamily: string;
   fontSize: Dimension;
   fontWeight: number;
@@ -205,12 +201,19 @@ interface TypographyValue {
   letterSpacing: Dimension;
 }
 
+export interface TypographyProperty {
+  property: keyof TypographyValue;
+  cssVar: string;
+  figmaValue: string;
+  /** The primitive this property references, if any */
+  reference?: string[];
+}
+
 export interface TextStyle {
   name: string;
   path: string[];
-  value: TypographyValue;
   /** One custom property per value, named as in tokens.css */
-  properties: { property: keyof TypographyValue; cssVar: string; figmaValue: string }[];
+  properties: TypographyProperty[];
 }
 
 const TYPOGRAPHY_PROPERTIES: (keyof TypographyValue)[] = [
@@ -225,33 +228,33 @@ const typographyTokens = tokenFiles
   .filter((file) => file.meta.source === 'text styles')
   .flatMap((file) => file.tokens);
 
-/**
- * Text styles, largest first as Figma lists them. Style names end in numbers,
- * and JavaScript orders integer-like keys numerically whatever order the JSON
- * is in, so the Figma order can't be read from the file. Groups (`headline`,
- * `body`) keep their JSON order, which matches Figma. Within a group, styles
- * are sorted by font size, largest first.
- */
-export const textStyles: TextStyle[] = typographyTokens
-  .map((token, index) => ({ token, index, group: token.path.slice(0, -1).join('/') }))
-  .sort((a, b) => {
-    const groupOrder = (group: string) => typographyTokens.findIndex((t) => t.path.slice(0, -1).join('/') === group);
-    const size = (t: RawToken) => (t.value as TypographyValue).fontSize.value;
-    return groupOrder(a.group) - groupOrder(b.group) || size(b.token) - size(a.token) || a.index - b.index;
-  })
-  .map(({ token }) => {
+const figmaOrder = (token: RawToken) => {
+  const order = token.figma.order;
+  if (typeof order !== 'number') throw new Error(`${figmaName(token.path)} has no Figma position in the export`);
+  return order;
+};
+
+/** Text styles in the order Figma lists them, from the position the export records */
+export const textStyles: TextStyle[] = [...typographyTokens]
+  .sort((a, b) => figmaOrder(a) - figmaOrder(b))
+  .map((token) => {
     const value = token.value as TypographyValue;
     return {
       name: figmaName(token.path),
       path: token.path,
-      value,
       properties: TYPOGRAPHY_PROPERTIES.map((property) => {
         const v = value[property];
+        const reference = referencePath(v);
         return {
           property,
-          cssVar: cssVar(['testds', 'typography', ...token.path, property]),
-          figmaValue: typeof v === 'object' ? `${v.value}${v.unit}` : String(v),
+          cssVar: cssVar(typographyPath(token.path, property)),
+          figmaValue: reference ? resolve(v) : typeof v === 'object' ? `${v.value}${v.unit}` : String(v),
+          reference,
         };
       }),
     };
   });
+
+/** Text styles that reference a primitive */
+export const textStylesUsing = (path: string[]) =>
+  textStyles.filter((style) => style.properties.some((p) => p.reference?.join('.') === path.join('.')));

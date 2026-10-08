@@ -150,10 +150,9 @@ const modeColumns: Column<RawToken>[] = [
 
 export const SemanticLightAndDark: Story = {
   name: 'Semantic: light and dark',
-  // Light values only exist on :root, so they can't be shown inside a dark
-  // page. This story keeps the page in the default mode and switches each
-  // mode column with data-theme. The toolbar theme is locked while it's open.
-  globals: { theme: 'light' },
+  // Each mode column sets data-theme, so it shows its mode whatever the
+  // toolbar theme is. With the toolbar on dark, the light column is a light
+  // section inside a dark page.
   render: () => (
     <Page
       title="Semantic colours: light and dark"
@@ -161,7 +160,8 @@ export const SemanticLightAndDark: Story = {
         <>
           <p>
             Every mode side by side. Each mode column sets <code className={styles.code}>data-theme</code> the same
-            way the app does, so its swatches and CSS values are read from tokens.css in that mode.
+            way the app does, so its swatches and CSS values are read from tokens.css in that mode. The page around
+            them follows the toolbar theme.
           </p>
           <BackdropNote />
         </>

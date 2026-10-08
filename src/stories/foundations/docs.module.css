@@ -1,7 +1,8 @@
 /*
  * Layout for the foundation pages. Colours, spacing, borders and type use the
  * design tokens. A few layout sizes (swatch and column widths) and the
- * monospace font have no token, and are documentation-only values.
+ * monospace font have no token. CLAUDE.md allows these layout-only values in
+ * documentation pages, never in component CSS.
  */
 
 .page {

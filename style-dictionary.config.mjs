@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import StyleDictionary from 'style-dictionary';
+import { cssName, referencePath, typographyPath } from './scripts/token-names.mjs';
 
 const OUTPUT = 'src/styles/tokens.css';
 const REM_BASE = 16;
@@ -11,11 +12,13 @@ const REM_BASE = 16;
 // loaded into one Style Dictionary instance. Each CSS block is built by its
 // own instance, and the blocks are joined into one file:
 //
-//   :root                 Primitives, Semantics (light), typography
-//   [data-theme="dark"]   Semantics (dark) only
+//   :root                          Primitives, typography
+//   :root, [data-theme="light"]    Semantics (light)
+//   [data-theme="dark"]            Semantics (dark)
 //
-// The dark instance also loads the primitives so its references resolve, but
-// only outputs the dark tokens.
+// Light is also on [data-theme="light"] so a light section can sit inside a
+// dark one. The semantics instances also load the primitives so their
+// references resolve, but only output their own mode.
 
 const FILES = {
   primitives: 'tokens/primitives.default.json',
@@ -27,8 +30,13 @@ const FILES = {
 const BLOCKS = [
   {
     selector: ':root',
-    source: [FILES.primitives, FILES.light, FILES.typography],
-    output: [FILES.primitives, FILES.light, FILES.typography],
+    source: [FILES.primitives, FILES.typography],
+    output: [FILES.primitives, FILES.typography],
+  },
+  {
+    selector: ':root, [data-theme="light"]',
+    source: [FILES.primitives, FILES.light],
+    output: [FILES.light],
   },
   {
     selector: '[data-theme="dark"]',
@@ -37,8 +45,10 @@ const BLOCKS = [
   },
 ];
 
-// Font is Inter (from Figma), followed by a system sans-serif fallback stack.
-// The fallback stack is specified in CLAUDE.md, not Figma. Keep the two in sync.
+// Font family primitives (Inter, from Figma) are followed by a system
+// sans-serif fallback stack. The stack is specified in CLAUDE.md, not Figma.
+// Keep the two in sync. Typography tokens reference the primitive, so they get
+// the stack through it.
 const FONT_FALLBACK = 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 // --- Parsing ---------------------------------------------------------------
@@ -59,26 +69,19 @@ StyleDictionary.registerParser({
 
 // --- Naming ----------------------------------------------------------------
 
-const kebab = (segment) =>
-  String(segment)
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[\s_/]+/g, '-')
-    .toLowerCase();
+// Names come from scripts/token-names.mjs, shared with the check and the docs.
 
 const isTypography = (token) => token.filePath.endsWith('typography.json');
 
-// Variables already start with `testds/<level>/`. Text style names don't, so
-// typography tokens get the `testds-typography-` prefix from CLAUDE.md.
-const tokenPath = (token) => (isTypography(token) ? ['testds', 'typography', ...token.path] : token.path);
-
-const cssName = (path) => path.map(kebab).join('-');
+// Expanded typography tokens have the text style's path plus the property.
+const tokenPath = (token) =>
+  isTypography(token) ? typographyPath(token.path.slice(0, -1), token.path.at(-1)) : token.path;
 
 // `{testds.primitive.color.neutral.9}` -> `var(--testds-primitive-color-neutral-9)`
-const REFERENCE = /^\{([^{}]+)\}$/;
 const referenceToVar = (ref, context) => {
-  const match = REFERENCE.exec(ref);
-  if (!match) throw new Error(`${context}: expected a single reference, got ${JSON.stringify(ref)}`);
-  return `var(--${cssName(match[1].split('.'))})`;
+  const path = referencePath(ref);
+  if (!path) throw new Error(`${context}: expected a single reference, got ${JSON.stringify(ref)}`);
+  return `var(--${cssName(path)})`;
 };
 
 StyleDictionary.registerTransform({

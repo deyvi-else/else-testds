@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CssValue, Name, Page, Table, TokenName, Values, type Column } from './docs';
 import styles from './docs.module.css';
-import { backdrops, cssVar, figmaName, figmaValue, primitives, usedBy, type RawToken } from './tokens';
+import { backdrops, cssVar, figmaName, figmaValue, modeAttributes, primitives, usedBy, type RawToken } from './tokens';
 
 const meta = {
   title: 'Foundations/Opacity',
@@ -16,11 +16,12 @@ const columns: Column<RawToken>[] = [
     header: 'Sample',
     cell: (token) => (
       <div className={styles.opacityBackdrops}>
-        {backdrops.map(({ mode, token: backdrop, primitive }) => (
+        {backdrops.map(({ mode, token: backdrop }) => (
           <div
             key={`${mode.name}-${backdrop.path.join('.')}`}
             className={styles.opacityBackdrop}
-            style={{ backgroundColor: `var(${cssVar(primitive)})` }}
+            {...modeAttributes(mode)}
+            style={{ backgroundColor: `var(${cssVar(backdrop.path)})` }}
           >
             <div className={styles.opacitySample} style={{ opacity: `var(${cssVar(token.path)})` }} />
           </div>
@@ -65,8 +66,8 @@ export const Opacity: Story = {
           </p>
           <p>
             Each sample is a block of <code className={styles.code}>icon/strong</code> with{' '}
-            <code className={styles.code}>opacity</code> set to the token, drawn on{' '}
-            {backdrops.map(({ mode, token }) => `${figmaName(token.path)} (${mode.name})`).join(' and ')}.
+            <code className={styles.code}>opacity</code> set to the token, drawn in each mode on its background (
+            {backdrops.map(({ mode, token }) => `${figmaName(token.path)} in ${mode.name}`).join(' and ')}).
           </p>
         </>
       }

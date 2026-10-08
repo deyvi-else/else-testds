@@ -1,6 +1,6 @@
 import { Fragment, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import styles from './docs.module.css';
-import { backdrops, cssVar, figmaName, references, type RawToken } from './tokens';
+import { backdrops, cssVar, figmaName, modeAttributes, references, type RawToken } from './tokens';
 
 // Shared building blocks for the foundation pages.
 
@@ -221,19 +221,24 @@ export const References = ({ token }: { token: RawToken }) => {
 /**
  * A colour drawn with its custom property. Transparent colours are drawn on
  * every mode's background colour, so the transparency is visible.
+ *
+ * Each backdrop is a [data-theme] section, which would switch the swatch to
+ * that mode too. So the colour is read once into --docs-swatch, in the
+ * swatch's own mode. A custom property inherits its resolved value, so the
+ * backdrops keep that colour.
  */
 export const Swatch = ({ name, transparent = false }: { name: string; transparent?: boolean }) => {
-  const fill = { backgroundColor: `var(${name})` } as CSSProperties;
-  if (!transparent) return <div className={styles.swatch} style={fill} />;
+  if (!transparent) return <div className={styles.swatch} style={{ backgroundColor: `var(${name})` }} />;
   return (
-    <div className={styles.backdrops}>
-      {backdrops.map(({ mode, token, primitive }) => (
+    <div className={styles.backdrops} style={{ '--docs-swatch': `var(${name})` } as CSSProperties}>
+      {backdrops.map(({ mode, token }) => (
         <div
           key={`${mode.name}-${token.path.join('.')}`}
           className={styles.backdrop}
-          style={{ backgroundColor: `var(${cssVar(primitive)})` } as CSSProperties}
+          {...modeAttributes(mode)}
+          style={{ backgroundColor: `var(${cssVar(token.path)})` }}
         >
-          <div className={styles.swatchFill} style={fill} />
+          <div className={styles.swatchFill} style={{ backgroundColor: 'var(--docs-swatch)' }} />
         </div>
       ))}
     </div>
@@ -244,17 +249,13 @@ export const Swatch = ({ name, transparent = false }: { name: string; transparen
 export const BackdropNote = () => (
   <p>
     Colours with transparency are drawn on{' '}
-    {backdrops.map(({ mode, token, primitive }, index) => (
+    {backdrops.map(({ mode, token }, index) => (
       <span key={`${mode.name}-${token.path.join('.')}`}>
         {index > 0 && (index === backdrops.length - 1 ? ' and ' : ', ')}
         <code className={styles.code}>
           <Name>{figmaName(token.path)}</Name>
         </code>{' '}
-        in {mode.name} mode (
-        <code className={styles.code}>
-          <Name>{figmaName(primitive)}</Name>
-        </code>
-        )
+        in {mode.name} mode
       </span>
     ))}
     , left to right. A fully transparent colour shows as &ldquo;transparent&rdquo; in CSS, because browsers
