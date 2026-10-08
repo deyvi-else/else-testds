@@ -9,12 +9,12 @@
     "100": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Inter",
+        "fontFamily": "{testds.primitive.font.family.sans}",
         "fontSize": {
           "value": 15,
           "unit": "px"
         },
-        "fontWeight": 510,
+        "fontWeight": 500,
         "lineHeight": {
           "value": 24,
           "unit": "px"
@@ -32,17 +32,18 @@
             "family": "Inter",
             "style": "Medium",
             "variationSettings": {
-              "slnt": 0,
-              "wght": 510
+              "wght": 500,
+              "slnt": 0
             }
-          }
+          },
+          "order": 2
         }
       }
     },
     "200": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Inter",
+        "fontFamily": "{testds.primitive.font.family.sans}",
         "fontSize": {
           "value": 20,
           "unit": "px"
@@ -68,14 +69,15 @@
               "slnt": 0,
               "wght": 590
             }
-          }
+          },
+          "order": 1
         }
       }
     },
     "300": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Inter",
+        "fontFamily": "{testds.primitive.font.family.sans}",
         "fontSize": {
           "value": 40,
           "unit": "px"
@@ -101,7 +103,8 @@
               "slnt": 0,
               "wght": 590
             }
-          }
+          },
+          "order": 0
         }
       }
     }
@@ -110,7 +113,7 @@
     "100": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Inter",
+        "fontFamily": "{testds.primitive.font.family.sans}",
         "fontSize": {
           "value": 13,
           "unit": "px"
@@ -136,14 +139,15 @@
               "wght": 400,
               "slnt": 0
             }
-          }
+          },
+          "order": 4
         }
       }
     },
     "200": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Inter",
+        "fontFamily": "{testds.primitive.font.family.sans}",
         "fontSize": {
           "value": 15,
           "unit": "px"
@@ -169,7 +173,8 @@
               "wght": 400,
               "slnt": 0
             }
-          }
+          },
+          "order": 3
         }
       }
     }

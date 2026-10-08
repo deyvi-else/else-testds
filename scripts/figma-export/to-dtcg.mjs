@@ -91,6 +91,14 @@ const variableToken = (variable, modeId) => {
       throw new Error(`${context}: no DTCG type mapped for FLOAT category "${category}"`);
     }
     token = toToken(value);
+  } else if (variable.resolvedType === 'STRING') {
+    if (isAlias(value)) throw new Error(`${context}: STRING aliases aren't handled yet`);
+    // Like FLOAT, STRING has no type in Figma, so the name decides it.
+    const [category, property] = variable.name.split('/').slice(2);
+    if (category !== 'font' || property !== 'family') {
+      throw new Error(`${context}: no DTCG type mapped for STRING "${category}/${property}"`);
+    }
+    token = { $type: 'fontFamily', $value: value };
   } else {
     throw new Error(`${context}: unsupported variable type ${variable.resolvedType}`);
   }
@@ -109,8 +117,9 @@ const variableToken = (variable, modeId) => {
 };
 
 // Text style values, kept in Figma's units. Every field the style carries is
-// read; anything other than the defaults we can represent throws.
-const textStyleToken = (style) => {
+// read; anything other than the defaults we can represent throws. `order` is
+// the style's position in Figma's text style list.
+const textStyleToken = (style, order) => {
   const context = `Text style ${style.name}`;
   if (style.lineHeight.unit !== 'PIXELS') {
     throw new Error(`${context}: line height unit ${style.lineHeight.unit} isn't handled yet`);
@@ -118,8 +127,16 @@ const textStyleToken = (style) => {
   if (style.letterSpacing.unit !== 'PERCENT') {
     throw new Error(`${context}: letter spacing unit ${style.letterSpacing.unit} isn't handled yet`);
   }
-  if (Object.keys(style.boundVariables ?? {}).length) {
-    throw new Error(`${context}: text styles bound to variables aren't handled yet`);
+  // Font family comes from a bound string variable (see CLAUDE.md). Other
+  // bindings aren't handled yet.
+  const { fontFamily: fontFamilyAlias, ...otherBindings } = style.boundVariables ?? {};
+  if (Object.keys(otherBindings).length) {
+    throw new Error(`${context}: bound ${Object.keys(otherBindings).join(', ')} aren't handled yet`);
+  }
+  const fontFamily = reference(fontFamilyAlias, `${context} font family`);
+  const fontFamilyValue = variablesById.get(fontFamilyAlias.id).valuesByMode;
+  if (!Object.values(fontFamilyValue).every((family) => family === style.fontName.family)) {
+    throw new Error(`${context}: renders ${style.fontName.family}, but its font family variable is ${JSON.stringify(fontFamilyValue)}`);
   }
   const defaults = {
     paragraphSpacing: 0,
@@ -148,7 +165,7 @@ const textStyleToken = (style) => {
   const token = {
     $type: 'typography',
     $value: {
-      fontFamily: style.fontName.family,
+      fontFamily,
       fontSize: { value: style.fontSize, unit: 'px' },
       fontWeight,
       lineHeight: { value: style.lineHeight.value, unit: 'px' },
@@ -161,6 +178,7 @@ const textStyleToken = (style) => {
       styleId: style.id,
       styleKey: style.key,
       fontName: style.fontName,
+      order,
     },
   };
   return token;
@@ -213,9 +231,16 @@ for (const collection of raw.collections) {
   }
 }
 
+// Every text style's font family must be bound to a variable (CLAUDE.md).
+// Report all unbound styles at once rather than stopping at the first.
+const unbound = raw.textStyles.filter((style) => !style.boundVariables?.fontFamily).map((style) => style.name);
+if (unbound.length) {
+  throw new Error(`Font family isn't bound to a variable in: ${unbound.join(', ')}`);
+}
+
 if (raw.textStyles.length) {
   const tree = { $extensions: { 'com.figma': { fileKey: raw.fileKey, source: 'text styles' } } };
-  for (const style of raw.textStyles) place(tree, style.name, textStyleToken(style));
+  raw.textStyles.forEach((style, order) => place(tree, style.name, textStyleToken(style, order)));
   files['typography.json'] = tree;
 }
 

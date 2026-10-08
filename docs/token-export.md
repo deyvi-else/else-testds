@@ -105,9 +105,10 @@ Values stay in Figma's units. The Style Dictionary build converts them.
 | Colour (alias + opacity) | `color` | `{ "color": <reference>, "opacity": <reference> }` (see below) |
 | FLOAT, `opacity` category | `number` | Figma percentage, e.g. `8` |
 | FLOAT, `space` or `border` category | `dimension` | `{ "value": 16, "unit": "px" }` |
+| STRING, `font/family` | `fontFamily` | Figma string, e.g. `Inter` |
 | Text style | `typography` | See below |
 
-Figma FLOAT variables have no unit, so the category segment of the name decides the type. A FLOAT in any other category stops the export.
+Figma FLOAT and STRING variables have no type beyond number or text, so the name decides the type. A FLOAT in any other category, or a STRING that isn't `font/family`, stops the export.
 
 ### Colour with opacity
 
@@ -143,7 +144,7 @@ Each text style becomes a DTCG `typography` token. Its group is the style name, 
 ```json
 "$type": "typography",
 "$value": {
-  "fontFamily": "Inter",
+  "fontFamily": "{testds.primitive.font.family.sans}",
   "fontSize": { "value": 40, "unit": "px" },
   "fontWeight": 590,
   "lineHeight": { "value": 44, "unit": "px" },
@@ -151,7 +152,11 @@ Each text style becomes a DTCG `typography` token. Its group is the style name, 
 }
 ```
 
+`fontFamily` is a reference to the string variable bound to the style's font family in Figma. Every text style must have one. If any isn't bound, the export stops and lists them. It also stops if the variable's value isn't the family the style renders (`fontName.family`), or if any other property is bound to a variable.
+
 `fontWeight` is the weight Figma renders: the `wght` axis value from the style's `fontName.variationSettings`. It is never derived from the style name. Inter is a variable font, so a style named `Medium` can render at 510 or 590. If a style has no `wght` axis value, the export stops. The full Figma `fontName`, including the style name, is kept in `$extensions`.
+
+`$extensions.com.figma.order` records the style's position in Figma's text style list, starting at 0. The JSON can't carry the order itself: style names end in numbers, and JavaScript orders integer-like keys numerically.
 
 Two values aren't standard DTCG, because converting them would mean changing Figma's values:
 

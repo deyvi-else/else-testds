@@ -612,6 +612,23 @@
             }
           }
         }
+      },
+      "font": {
+        "family": {
+          "sans": {
+            "$type": "fontFamily",
+            "$value": "Inter",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:24:522",
+                "variableKey": "2d8a4d7a30a23b032b27345c730e2a38c92cfb2d",
+                "scopes": [
+                  "ALL_SCOPES"
+                ]
+              }
+            }
+          }
+        }
       }
     }
   }
