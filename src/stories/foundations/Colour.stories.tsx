@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
-  BackdropNote,
   Name,
   Page,
   References,
   RenderedColor,
   Swatch,
+  SwatchNote,
   Table,
   TokenName,
   Values,
@@ -17,7 +17,6 @@ import {
   defaultMode,
   figmaName,
   figmaValue,
-  hasOpacity,
   modeAttributes,
   modeNamed,
   modes,
@@ -87,7 +86,7 @@ export const Primitives: Story = {
 // --- Semantic ------------------------------------------------------------------------
 
 const semanticColumns: Column<RawToken>[] = [
-  { header: 'Colour', cell: (token) => <Swatch name={cssVar(token.path)} transparent={hasOpacity(token)} /> },
+  { header: 'Colour', cell: (token) => <Swatch name={cssVar(token.path)} /> },
   { header: 'Token', cell: (token) => <TokenName path={token.path} /> },
   {
     header: 'Value',
@@ -109,7 +108,7 @@ export const Semantic: Story = {
               Showing <strong>{mode.name}</strong> mode. Use the Theme toggle in the toolbar to switch modes, or see{' '}
               <em>Semantic: light and dark</em> for both side by side.
             </p>
-            <BackdropNote />
+            <SwatchNote />
           </>
         }
       >
@@ -132,7 +131,7 @@ const ModeCell = ({ mode, path }: { mode: Mode; path: string[] }) => {
     <div className={styles.mode} {...modeAttributes(mode)}>
       {token ? (
         <div className={styles.list}>
-          <Swatch name={cssVar(token.path)} transparent={hasOpacity(token)} />
+          <Swatch name={cssVar(token.path)} />
           <Values figma={figmaValue(token)} css={<RenderedColor name={cssVar(token.path)} />} />
           <References token={token} />
         </div>
@@ -163,7 +162,7 @@ export const SemanticLightAndDark: Story = {
             way the app does, so its swatches and CSS values are read from tokens.css in that mode. The page around
             them follows the toolbar theme.
           </p>
-          <BackdropNote />
+          <SwatchNote />
         </>
       }
     >

@@ -89,7 +89,7 @@ The foundation pages are in `src/stories/foundations/`. `tokens.ts` reads every 
 
 **Shared naming means the check can't catch a naming bug.** `tokens:check` was written to share no code with the build. CLAUDE.md now requires one naming module, so a mistake in `scripts/token-names.mjs` would produce the same wrong name in the CSS and in the check. Values are still checked independently.
 
-**Transparent swatches use the real backgrounds.** Each backdrop is a `[data-theme]` section painted with `background/primary`. That would also switch the swatch's colour to the backdrop's mode. So the swatch colour is read once into `--docs-swatch`, in the swatch's own mode. A custom property inherits its resolved value, so the colour stays the same on every backdrop. The opacity samples now render in each backdrop's mode, so they're visible on both backgrounds (before, `icon/strong` disappeared on one).
+**Transparent swatches use the real backgrounds.** Each backdrop is a `[data-theme]` section painted with `background/primary`. That would also switch the swatch's colour to the backdrop's mode. So the swatch colour is read once into `--docs-swatch`, in the swatch's own mode. A custom property inherits its resolved value, so the colour stays the same on every backdrop. The opacity samples now render in each backdrop's mode, so they're visible on both backgrounds (before, `icon/strong` disappeared on one). **Changed:** swatches now show only their own mode (see "Swatches show one mode at a time" below).
 
 **"font" isn't in the naming table's category examples.** The table lists `color`, `opacity`, `space` and `border`. `testds/primitive/font/family/sans` uses `font` as the category and `family` as the property. It follows the segment order, but the table and the Figma naming frame may want `font` added.
 
@@ -106,3 +106,11 @@ The foundation pages are in `src/stories/foundations/`. `tokens.ts` reads every 
 **The build drops the expanded font family, but checks it first.** Style Dictionary's `expand` still produces a `fontFamily` token per text style. The build leaves it out of the CSS, and stops if it isn't a reference to a primitive, so a style can't silently lose its family. `tokens:check` fails if a text style gets its own `font-family` property back. It also checks that each style's bound primitive renders the style's family with the fallback stack.
 
 **The docs page styles had to move too.** `docs.module.css` set its own fonts with `var(--testds-typography-*-font-family)`. Once those were removed, its text would have fallen back to the browser's default font, with nothing to flag it. Those references now use the primitive.
+
+## 2026-10-08: Swatches show one mode at a time
+
+**Showing a value on another mode's background was confusing.** Transparent swatches were split in two, showing the colour on the light background and on the dark background. So the light value appeared on a dark background (and the reverse), which never happens in the product. It read as two colours rather than one. The original brief asked for "colours with transparency on both background colours". That was read as both modes' backgrounds, but the intent was to see each value in context.
+
+**Now every swatch is drawn on `background/primary` in its own mode.** A swatch paints the page background behind the colour, using the same semantic token, so both resolve to the mode the swatch is in. In the light column (or light toolbar theme), black at 2% sits on white. In the dark column, white at 5% sits on near-black. Solid and transparent colours use the same swatch. The Opacity page does the same: each sample is drawn on the current mode's background, and follows the toolbar.
+
+**This removed a workaround.** Drawing one mode's colour inside another mode's section needed the `--docs-swatch` custom property, to keep the swatch's own value. With one mode per swatch, `var()` resolves in place and the workaround is gone.

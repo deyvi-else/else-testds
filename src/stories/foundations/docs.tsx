@@ -1,6 +1,6 @@
-import { Fragment, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import styles from './docs.module.css';
-import { backdrops, cssVar, figmaName, modeAttributes, references, type RawToken } from './tokens';
+import { cssVar, figmaName, pageBackground, references, type RawToken } from './tokens';
 
 // Shared building blocks for the foundation pages.
 
@@ -219,47 +219,25 @@ export const References = ({ token }: { token: RawToken }) => {
 // --- Swatches ---------------------------------------------------------------------------
 
 /**
- * A colour drawn with its custom property. Transparent colours are drawn on
- * every mode's background colour, so the transparency is visible.
- *
- * Each backdrop is a [data-theme] section, which would switch the swatch to
- * that mode too. So the colour is read once into --docs-swatch, in the
- * swatch's own mode. A custom property inherits its resolved value, so the
- * backdrops keep that colour.
+ * A colour drawn with its custom property, on the page background of the same
+ * mode. A colour with transparency then looks as it would on the page, and a
+ * mode's value is never shown on another mode's background.
  */
-export const Swatch = ({ name, transparent = false }: { name: string; transparent?: boolean }) => {
-  if (!transparent) return <div className={styles.swatch} style={{ backgroundColor: `var(${name})` }} />;
-  return (
-    <div className={styles.backdrops} style={{ '--docs-swatch': `var(${name})` } as CSSProperties}>
-      {backdrops.map(({ mode, token }) => (
-        <div
-          key={`${mode.name}-${token.path.join('.')}`}
-          className={styles.backdrop}
-          {...modeAttributes(mode)}
-          style={{ backgroundColor: `var(${cssVar(token.path)})` }}
-        >
-          <div className={styles.swatchFill} style={{ backgroundColor: 'var(--docs-swatch)' }} />
-        </div>
-      ))}
-    </div>
-  );
-};
+export const Swatch = ({ name }: { name: string }) => (
+  <div className={styles.swatch} style={{ backgroundColor: `var(${cssVar(pageBackground)})` }}>
+    <div className={styles.swatchFill} style={{ backgroundColor: `var(${name})` }} />
+  </div>
+);
 
-/** Explains what transparent swatches are drawn on, from the token JSON */
-export const BackdropNote = () => (
+/** Explains what swatches are drawn on, from the token JSON */
+export const SwatchNote = () => (
   <p>
-    Colours with transparency are drawn on{' '}
-    {backdrops.map(({ mode, token }, index) => (
-      <span key={`${mode.name}-${token.path.join('.')}`}>
-        {index > 0 && (index === backdrops.length - 1 ? ' and ' : ', ')}
-        <code className={styles.code}>
-          <Name>{figmaName(token.path)}</Name>
-        </code>{' '}
-        in {mode.name} mode
-      </span>
-    ))}
-    , left to right. A fully transparent colour shows as &ldquo;transparent&rdquo; in CSS, because browsers
-    don&apos;t keep its hue.
+    Each swatch is drawn on{' '}
+    <code className={styles.code}>
+      <Name>{figmaName(pageBackground)}</Name>
+    </code>{' '}
+    in the same mode, so colours with transparency look as they would on the page. A fully transparent colour shows
+    as &ldquo;transparent&rdquo; in CSS, because browsers don&apos;t keep its hue.
   </p>
 );
 
