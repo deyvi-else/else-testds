@@ -1,0 +1,258 @@
+/*
+ * Layout for the foundation pages. Colours, spacing, borders and type use the
+ * design tokens. A few layout sizes (swatch and column widths) and the
+ * monospace font have no token, and are documentation-only values.
+ */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: var(--testds-primitive-space-9) var(--testds-primitive-space-8);
+  background-color: var(--testds-semantic-color-background-primary);
+  color: var(--testds-semantic-color-text-standard);
+  font-family: var(--testds-typography-body-200-font-family);
+  font-size: var(--testds-typography-body-200-font-size);
+  font-weight: var(--testds-typography-body-200-font-weight);
+  line-height: var(--testds-typography-body-200-line-height);
+  letter-spacing: var(--testds-typography-body-200-letter-spacing);
+}
+
+.title {
+  margin: 0 0 var(--testds-primitive-space-5);
+  color: var(--testds-semantic-color-text-strong);
+  font-family: var(--testds-typography-headline-300-font-family);
+  font-size: var(--testds-typography-headline-300-font-size);
+  font-weight: var(--testds-typography-headline-300-font-weight);
+  line-height: var(--testds-typography-headline-300-line-height);
+  letter-spacing: var(--testds-typography-headline-300-letter-spacing);
+}
+
+.heading {
+  margin: 0 0 var(--testds-primitive-space-3);
+  color: var(--testds-semantic-color-text-strong);
+  font-family: var(--testds-typography-headline-200-font-family);
+  font-size: var(--testds-typography-headline-200-font-size);
+  font-weight: var(--testds-typography-headline-200-font-weight);
+  line-height: var(--testds-typography-headline-200-line-height);
+  letter-spacing: var(--testds-typography-headline-200-letter-spacing);
+}
+
+.subheading {
+  margin: 0 0 var(--testds-primitive-space-3);
+  color: var(--testds-semantic-color-text-strong);
+  font-family: var(--testds-typography-headline-100-font-family);
+  font-size: var(--testds-typography-headline-100-font-size);
+  font-weight: var(--testds-typography-headline-100-font-weight);
+  line-height: var(--testds-typography-headline-100-line-height);
+  letter-spacing: var(--testds-typography-headline-100-letter-spacing);
+}
+
+.intro {
+  max-width: 48rem;
+  margin-bottom: var(--testds-primitive-space-7);
+}
+
+.intro p {
+  margin: 0 0 var(--testds-primitive-space-3);
+}
+
+.section {
+  margin-top: var(--testds-primitive-space-12);
+}
+
+.subtle,
+.caption,
+.label {
+  color: var(--testds-semantic-color-text-subtle);
+  font-size: var(--testds-typography-body-100-font-size);
+  font-weight: var(--testds-typography-body-100-font-weight);
+  line-height: var(--testds-typography-body-100-line-height);
+  letter-spacing: var(--testds-typography-body-100-letter-spacing);
+}
+
+.label {
+  font-family: var(--testds-typography-headline-100-font-family);
+  font-weight: var(--testds-typography-headline-100-font-weight);
+}
+
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--testds-typography-body-100-font-size);
+  line-height: var(--testds-typography-body-100-line-height);
+  color: var(--testds-semantic-color-text-strong);
+  overflow-wrap: anywhere;
+}
+
+.missing {
+  font-weight: var(--testds-typography-headline-100-font-weight);
+}
+
+.missing::before {
+  content: '⚠ ';
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--testds-primitive-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --- Tables --- */
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.caption {
+  padding-bottom: var(--testds-primitive-space-3);
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: var(--testds-primitive-space-4) var(--testds-primitive-space-5) var(--testds-primitive-space-4) 0;
+  border-bottom: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+  vertical-align: top;
+}
+
+.table th {
+  color: var(--testds-semantic-color-text-strong);
+  font-family: var(--testds-typography-headline-100-font-family);
+  font-size: var(--testds-typography-headline-100-font-size);
+  font-weight: var(--testds-typography-headline-100-font-weight);
+  line-height: var(--testds-typography-headline-100-line-height);
+}
+
+.values {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--testds-primitive-space-3);
+  margin: 0;
+}
+
+.values dt {
+  color: var(--testds-semantic-color-text-subtle);
+  font-size: var(--testds-typography-body-100-font-size);
+  line-height: var(--testds-typography-body-100-line-height);
+}
+
+.values dd {
+  margin: 0;
+}
+
+/* --- Swatches --- */
+
+.swatch,
+.backdrops {
+  box-sizing: border-box;
+  width: 6rem;
+  height: var(--testds-primitive-space-12);
+  border: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+}
+
+.backdrops {
+  display: flex;
+}
+
+.backdrop {
+  flex: 1;
+  display: flex;
+}
+
+.swatchFill {
+  flex: 1;
+}
+
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--testds-primitive-space-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paletteSwatch {
+  box-sizing: border-box;
+  height: var(--testds-primitive-space-16);
+  margin-bottom: var(--testds-primitive-space-4);
+  border: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+}
+
+/* --- Light and dark --- */
+
+.mode {
+  padding: var(--testds-primitive-space-5);
+  border-radius: var(--testds-primitive-border-radius-1);
+  background-color: var(--testds-semantic-color-background-primary);
+  color: var(--testds-semantic-color-text-standard);
+}
+
+/* --- Opacity --- */
+
+.opacityBackdrops {
+  display: flex;
+  gap: var(--testds-primitive-space-3);
+}
+
+.opacityBackdrop {
+  padding: var(--testds-primitive-space-3);
+  border: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+}
+
+.opacitySample {
+  background-color: var(--testds-semantic-color-icon-strong);
+  width: var(--testds-primitive-space-10);
+  height: var(--testds-primitive-space-10);
+}
+
+/* --- Spacing --- */
+
+.space {
+  background-color: var(--testds-semantic-color-icon-strong);
+}
+
+/* --- Borders --- */
+
+.borderSample {
+  box-sizing: border-box;
+  width: var(--testds-primitive-space-16);
+  height: var(--testds-primitive-space-16);
+  border-style: solid;
+  border-color: var(--testds-semantic-color-icon-strong);
+}
+
+/* --- Typography --- */
+
+.specimens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--testds-primitive-space-10);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.specimen {
+  padding-bottom: var(--testds-primitive-space-8);
+  border-bottom: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+}
+
+.specimenText {
+  margin: 0 0 var(--testds-primitive-space-5);
+  color: var(--testds-semantic-color-text-strong);
+}

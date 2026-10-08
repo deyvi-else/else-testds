@@ -52,3 +52,21 @@ See [token-build.md](token-build.md) for the build and the Figma check.
 **Typography order differs from Figma.** Figma lists `headline/300`, `200`, `100`. Style names ending in numbers become integer-like JSON keys, which JavaScript always orders numerically, so the CSS lists 100, 200, 300. Only the order changes, not the values.
 
 **Checking the CSS in a browser confirmed the Node check.** Computed styles in Storybook matched Figma for every semantic colour in both modes, and for typography (`headline/300` renders at 40px / 44px / weight 590 with Inter's variable font loaded). Borders computed as 0.8px at the test display's scaling. That's the browser snapping to device pixels, not the token.
+
+## 2026-10-08: Token documentation pages
+
+The foundation pages are in `src/stories/foundations/`. `tokens.ts` reads every file in `tokens/` with `import.meta.glob`, so token lists, names and references always come from the latest export. Everything drawn on the pages uses the custom properties from `tokens.css`, and every "CSS" value is read back from the browser with `getComputedStyle`. If a token's CSS name isn't defined in `tokens.css`, the page shows a warning instead of a value.
+
+**Light values can't be shown inside a dark page.** Light semantic values are only defined on `:root`, and dark values override them when `<html>` has `data-theme="dark"`. Nothing inside the page can get the light values back. The "Semantic: light and dark" story fixes the page to light mode (it locks the toolbar), and gives the dark column `data-theme="dark"`. Adding `[data-theme="light"]` next to `:root` in the build would allow light inside dark, but CLAUDE.md says light outputs on `:root` only, so the build wasn't changed.
+
+**Transparent colours are drawn on primitives, not on the semantic background.** To show transparency, each transparent swatch is drawn on the background colour of every mode. For the same reason as above, the light background isn't reachable from a dark page, so the pages paint these backdrops with the primitive each mode's `background/primary` references (worked out from the JSON). Only opaque `background` tokens are used as backdrops.
+
+**Typography order can't be read from the JSON.** Style names end in numbers, and JavaScript orders integer-like keys numerically, so `headline/100` comes before `headline/300` however the file is written. The page keeps the groups in JSON order (`headline`, then `body`, which matches Figma) and sorts each group by font size, largest first. This matches Figma today. To follow Figma's order exactly, the export would need to record each style's position (for example in `$extensions`).
+
+**The CSS naming logic is duplicated.** `tokens.ts` repeats the kebab-case naming from `style-dictionary.config.mjs`, because the config builds the CSS when it's imported. If they drift, the pages show "Not in tokens.css" for the affected tokens.
+
+**Fully transparent colours show as "transparent".** `border/invisible` is black at 0% in light mode and white at 0% in dark mode. Browsers drop the channels of a colour with 0 alpha, so the computed colour is always black. The pages show "transparent (0%)" rather than a hex that disagrees with Figma.
+
+**Borders render at 0.8px at 125% display scaling.** The computed `border-width` is `0.8px` on a 1.25 device pixel ratio, while the token is `1px`. This is the browser snapping to device pixels, as noted when the CSS was first checked.
+
+**Some documentation-only values have no token.** The swatch size, palette column width and the monospace font for token names are hard-coded in `docs.module.css`. They're page layout, not design decisions, so no token was invented for them.
