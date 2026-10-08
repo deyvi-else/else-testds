@@ -44,7 +44,8 @@
         "VariableID:5:163",
         "VariableID:5:165",
         "VariableID:5:166",
-        "VariableID:5:167"
+        "VariableID:5:167",
+        "VariableID:24:522"
       ]
     },
     {
@@ -924,6 +925,22 @@
       ],
       "codeSyntax": {},
       "hiddenFromPublishing": false
+    },
+    {
+      "id": "VariableID:24:522",
+      "key": "2d8a4d7a30a23b032b27345c730e2a38c92cfb2d",
+      "name": "testds/primitive/font/family/sans",
+      "description": "",
+      "resolvedType": "STRING",
+      "variableCollectionId": "VariableCollectionId:2:4523",
+      "valuesByMode": {
+        "2:0": "Inter"
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ],
+      "codeSyntax": {},
+      "hiddenFromPublishing": false
     }
   ],
   "textStyles": [
@@ -954,7 +971,12 @@
       "textCase": "ORIGINAL",
       "textDecoration": "NONE",
       "leadingTrim": "NONE",
-      "boundVariables": {}
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
     },
     {
       "id": "S:f539a23e89d0a9a20f51b0bfe93f6239c1863cd3,",
@@ -983,7 +1005,12 @@
       "textCase": "ORIGINAL",
       "textDecoration": "NONE",
       "leadingTrim": "NONE",
-      "boundVariables": {}
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
     },
     {
       "id": "S:ab8bcb83056847f232530faa231eaf14a2326b6a,",
@@ -1012,7 +1039,12 @@
       "textCase": "ORIGINAL",
       "textDecoration": "NONE",
       "leadingTrim": "NONE",
-      "boundVariables": {}
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
     },
     {
       "id": "S:61bd68150acd393a13d1e97ff93c11cba02e8ba8,",
@@ -1041,7 +1073,12 @@
       "textCase": "ORIGINAL",
       "textDecoration": "NONE",
       "leadingTrim": "NONE",
-      "boundVariables": {}
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
     },
     {
       "id": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
@@ -1070,7 +1107,12 @@
       "textCase": "ORIGINAL",
       "textDecoration": "NONE",
       "leadingTrim": "NONE",
-      "boundVariables": {}
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
     }
   ],
   "effectStyles": []

@@ -5,22 +5,27 @@
 // calc() the way a browser would. Compares each with the value Figma gives
 // the matching variable or text style property in that mode.
 //
-// It deliberately shares no code with the Style Dictionary build or the
-// DTCG converter: it reads only the CSS and the raw Figma snapshot.
+// It reads only the CSS and the raw Figma snapshot, and shares no value
+// logic with the Style Dictionary build or the DTCG converter. The one shared
+// piece is naming (scripts/token-names.mjs), which CLAUDE.md requires to live
+// in one module.
 //
 // It also checks:
 // - References: if Figma aliases a variable, the CSS must use var() to the
 //   aliased token, not a resolved value
 // - Units: spacing, font size and line height in rem, borders in px, opacity
 //   as a decimal, letter spacing in em
-// - Coverage: nothing missing from the CSS, nothing extra, and the dark block
-//   only overrides tokens from collections that have a dark mode
+// - Coverage: nothing missing from the CSS, nothing extra, and the light and
+//   dark blocks hold exactly the tokens from collections with those modes
+// - Nesting: light values must also apply to [data-theme="light"] inside a
+//   dark page, so that's checked as a third case
 //
 // Usage: npm run tokens:check. Exits 1 if anything doesn't match.
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { cssVar, figmaPath, typographyPath } from '../token-names.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const raw = JSON.parse(readFileSync(join(ROOT, 'scripts/figma-export/figma-raw.json'), 'utf8'));
@@ -29,8 +34,7 @@ const css = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8');
 const REM_BASE = 16;
 // The font fallback stack specified in CLAUDE.md (not a Figma value).
 const FONT_FALLBACK = ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'];
-const MODES = ['light', 'dark'];
-const SELECTORS = { root: ':root', dark: '[data-theme="dark"]' };
+const SELECTORS = { root: ':root', light: ':root, [data-theme="light"]', dark: '[data-theme="dark"]' };
 // Hex output rounds each channel to 8 bits, so allow half a step.
 const CHANNEL_TOLERANCE = 0.5 / 255 + 1e-9;
 const EPSILON = 1e-9;
@@ -49,19 +53,29 @@ for (const [, selector, body] of stripped.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     if (match) declarations.set(match[1], match[2]);
     else if (declaration.trim()) fail('-', selector.trim(), `can't parse declaration "${declaration.trim()}"`);
   }
+  if (blocks[selector.trim()]) fail('-', selector.trim(), 'selector appears more than once');
   blocks[selector.trim()] = declarations;
 }
 for (const selector of Object.keys(blocks)) {
   if (!Object.values(SELECTORS).includes(selector)) fail('-', selector, 'unexpected selector');
 }
 const rootBlock = blocks[SELECTORS.root] ?? new Map();
+const lightBlock = blocks[SELECTORS.light] ?? new Map();
 const darkBlock = blocks[SELECTORS.dark] ?? new Map();
 
-// The declarations that apply in each mode: dark overrides :root.
-const scopes = {
-  light: rootBlock,
-  dark: new Map([...rootBlock, ...darkBlock]),
-};
+// The declarations that apply in each case, in cascade order. <html> always
+// matches :root, so in dark mode the light block applies first and the dark
+// block overrides it. A [data-theme="light"] section inside a dark page
+// inherits the dark values, and the light block overrides them again.
+const CASES = [
+  { name: 'light', figmaMode: 'light', scope: new Map([...rootBlock, ...lightBlock]) },
+  { name: 'dark', figmaMode: 'dark', scope: new Map([...rootBlock, ...lightBlock, ...darkBlock]) },
+  {
+    name: 'light in dark',
+    figmaMode: 'light',
+    scope: new Map([...rootBlock, ...lightBlock, ...darkBlock, ...lightBlock]),
+  },
+];
 
 // --- Evaluate CSS values ---------------------------------------------------
 
@@ -177,12 +191,7 @@ const figmaModeId = (collection, mode) => {
   return match.modeId;
 };
 
-const kebab = (segment) =>
-  String(segment)
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[\s_/]+/g, '-')
-    .toLowerCase();
-const cssName = (figmaName) => `--${figmaName.split('/').map(kebab).join('-')}`;
+const cssName = (name) => cssVar(figmaPath(name));
 
 const valueIn = (variable, mode) =>
   variable.valuesByMode[figmaModeId(collectionsById.get(variable.variableCollectionId), mode)];
@@ -221,7 +230,7 @@ const toPx = (length) => {
 // --- Compare ---------------------------------------------------------------
 
 const expectedNames = new Set();
-const checked = Object.fromEntries(MODES.map((mode) => [mode, 0]));
+const checked = Object.fromEntries(CASES.map(({ name }) => [name, 0]));
 const near = (a, b, tolerance = EPSILON) => Math.abs(a - b) <= tolerance;
 
 const formatColor = (c) =>
@@ -229,18 +238,27 @@ const formatColor = (c) =>
 
 const UNIT_RULES = { space: 'rem', border: 'px' };
 
-for (const mode of MODES) {
-  const scope = scopes[mode];
+// A font family list: the Figma family first, then CLAUDE.md's fallback stack.
+const checkFontFamily = (actual, family) => {
+  if (actual.type !== 'string') return `expected a font family list, got ${actual.type}`;
+  const families = splitTopLevel(actual.value, /,/).map((f) => f.replace(/^["']|["']$/g, ''));
+  if (families[0] !== family) return `first family "${families[0]}" doesn't match Figma "${family}"`;
+  const fallback = families.slice(1);
+  if (fallback.join(', ') !== FONT_FALLBACK.join(', ')) {
+    return `fallback stack "${fallback.join(', ')}" doesn't match CLAUDE.md "${FONT_FALLBACK.join(', ')}"`;
+  }
+};
 
+for (const { name: caseName, figmaMode: mode, scope } of CASES) {
   const compare = (name, check) => {
     expectedNames.add(name);
-    if (!scope.has(name)) return fail(mode, name, 'missing from the CSS');
+    if (!scope.has(name)) return fail(caseName, name, 'missing from the CSS');
     try {
       const message = check(evaluate(`var(${name})`, scope), scope.get(name));
-      if (message) fail(mode, name, message);
-      else checked[mode]++;
+      if (message) fail(caseName, name, message);
+      else checked[caseName]++;
     } catch (error) {
-      fail(mode, name, error.message);
+      fail(caseName, name, error.message);
     }
   };
 
@@ -293,38 +311,53 @@ for (const mode of MODES) {
         return `no comparison defined for FLOAT category "${category}"`;
       }
 
+      if (variable.resolvedType === 'STRING') {
+        const [category, property] = variable.name.split('/').slice(2);
+        if (category === 'font' && property === 'family') return checkFontFamily(actual, expected);
+        return `no comparison defined for STRING "${category}/${property}"`;
+      }
+
       return `no comparison defined for ${variable.resolvedType}`;
     });
   }
 
   for (const style of raw.textStyles) {
-    const prefix = `--testds-typography-${style.name.split('/').map(kebab).join('-')}`;
+    const property = (name) => cssVar(typographyPath(figmaPath(style.name), name));
 
-    compare(`${prefix}-font-family`, (actual) => {
-      if (actual.type !== 'string') return `expected a font family list, got ${actual.type}`;
-      const families = splitTopLevel(actual.value, /,/).map((f) => f.replace(/^["']|["']$/g, ''));
-      if (families[0] !== style.fontName.family) {
-        return `first family "${families[0]}" doesn't match Figma "${style.fontName.family}"`;
+    // As in Figma, a text style has no font family of its own. It must be
+    // bound to a variable, and that variable's custom property must render
+    // the family the style uses. The style itself outputs no font-family.
+    const bound = style.boundVariables?.fontFamily;
+    if (!isAlias(bound)) {
+      fail(caseName, style.name, 'font family is not bound to a variable in Figma');
+    } else {
+      const name = cssName(variablesById.get(bound.id).name);
+      try {
+        const message = scope.has(name)
+          ? checkFontFamily(evaluate(`var(${name})`, scope), style.fontName.family)
+          : `bound font family ${name} is missing from the CSS`;
+        if (message) fail(caseName, style.name, message);
+      } catch (error) {
+        fail(caseName, style.name, error.message);
       }
-      const fallback = families.slice(1);
-      if (fallback.join(', ') !== FONT_FALLBACK.join(', ')) {
-        return `fallback stack "${fallback.join(', ')}" doesn't match CLAUDE.md "${FONT_FALLBACK.join(', ')}"`;
-      }
-    });
+    }
+    if (scope.has(property('fontFamily'))) {
+      fail(caseName, property('fontFamily'), 'text styles have no font family of their own; use the bound primitive');
+    }
 
-    const remPx = (property, figmaPx) =>
-      compare(`${prefix}-${property}`, (actual, declared) => {
+    const remPx = (name, figmaPx) =>
+      compare(property(name), (actual, declared) => {
         if (actual.type !== 'length' || actual.unit !== 'rem') return `should be in rem, got "${declared}"`;
         if (!near(toPx(actual), figmaPx)) return `${toPx(actual)}px doesn't match Figma ${figmaPx}px`;
       });
-    remPx('font-size', style.fontSize);
+    remPx('fontSize', style.fontSize);
     if (style.lineHeight.unit !== 'PIXELS') {
-      fail(mode, `${prefix}-line-height`, `no comparison defined for line height unit ${style.lineHeight.unit}`);
+      fail(caseName, property('lineHeight'), `no comparison defined for line height unit ${style.lineHeight.unit}`);
     } else {
-      remPx('line-height', style.lineHeight.value);
+      remPx('lineHeight', style.lineHeight.value);
     }
 
-    compare(`${prefix}-font-weight`, (actual, declared) => {
+    compare(property('fontWeight'), (actual, declared) => {
       const wght = style.fontName.variationSettings?.wght;
       if (typeof wght !== 'number') return 'Figma style has no wght axis value to compare';
       if (actual.type !== 'number' || actual.value !== wght) {
@@ -332,7 +365,7 @@ for (const mode of MODES) {
       }
     });
 
-    compare(`${prefix}-letter-spacing`, (actual, declared) => {
+    compare(property('letterSpacing'), (actual, declared) => {
       if (style.letterSpacing.unit !== 'PERCENT') {
         return `no comparison defined for letter spacing unit ${style.letterSpacing.unit}`;
       }
@@ -350,28 +383,31 @@ if (raw.effectStyles.length) {
 
 // --- Coverage --------------------------------------------------------------
 
-for (const name of new Set([...rootBlock.keys(), ...darkBlock.keys()])) {
+for (const name of new Set([...rootBlock.keys(), ...lightBlock.keys(), ...darkBlock.keys()])) {
   if (!expectedNames.has(name)) fail('-', name, 'in the CSS but not in Figma');
 }
 
-// The dark block should override exactly the variables whose collection has
-// a dark mode.
-const darkNames = new Set(
-  raw.variables
-    .filter((v) => collectionsById.get(v.variableCollectionId).modes.some((m) => m.name === 'dark'))
-    .map((v) => cssName(v.name)),
-);
-for (const name of darkBlock.keys()) {
-  if (!darkNames.has(name)) fail('dark', name, 'in the dark block, but its collection has no dark mode');
-}
-for (const name of darkNames) {
-  if (!darkBlock.has(name)) fail('dark', name, 'missing from the dark block');
+// The light and dark blocks should hold exactly the variables whose collection
+// has that mode, and none of them should also be in the :root-only block.
+for (const [mode, block] of [['light', lightBlock], ['dark', darkBlock]]) {
+  const names = new Set(
+    raw.variables
+      .filter((v) => collectionsById.get(v.variableCollectionId).modes.some((m) => m.name === mode))
+      .map((v) => cssName(v.name)),
+  );
+  for (const name of block.keys()) {
+    if (!names.has(name)) fail(mode, name, `in the ${mode} block, but its collection has no ${mode} mode`);
+    if (rootBlock.has(name)) fail(mode, name, `in both :root and the ${mode} block`);
+  }
+  for (const name of names) {
+    if (!block.has(name)) fail(mode, name, `missing from the ${mode} block`);
+  }
 }
 
 // --- Report ----------------------------------------------------------------
 
-for (const mode of MODES) {
-  console.log(`${mode}: ${checked[mode]} of ${expectedNames.size} values match Figma`);
+for (const { name } of CASES) {
+  console.log(`${name}: ${checked[name]} of ${expectedNames.size} values match Figma`);
 }
 
 if (failures.length) {

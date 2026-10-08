@@ -14,16 +14,21 @@ npm run tokens
 npm run tokens:check
 ```
 
-`tokens` builds the CSS. `tokens:check` compares every value in the CSS with the Figma snapshot, in both modes, and exits with an error if anything doesn't match.
+`tokens` builds the CSS. `tokens:check` compares every value in the CSS with the Figma snapshot, in light, dark and light-inside-dark, and exits with an error if anything doesn't match.
 
 ## Output
 
 ```
-:root                 Primitives, Semantics (light), typography
-[data-theme="dark"]   Semantics (dark) only
+:root                          Primitives, typography
+:root, [data-theme="light"]    Semantics (light)
+[data-theme="dark"]            Semantics (dark)
 ```
 
-The light and dark files share token paths, so one Style Dictionary instance can't load both. [`style-dictionary.config.mjs`](../style-dictionary.config.mjs) builds each block with its own instance and joins them into one file. The dark instance also loads the primitives so its references resolve, but only outputs the dark tokens.
+The light and dark files share token paths, so one Style Dictionary instance can't load both. [`style-dictionary.config.mjs`](../style-dictionary.config.mjs) builds each block with its own instance and joins them into one file. The semantics instances also load the primitives so their references resolve, but only output their own mode.
+
+Light is the default on `:root`, and also on `[data-theme="light"]` so a light section can sit inside a dark one.
+
+Token names come from [`scripts/token-names.mjs`](../scripts/token-names.mjs). The build, `tokens:check` and the Storybook foundation pages all use it, so naming is defined once (CLAUDE.md).
 
 The token files are listed in the config. If a new collection or mode adds a file to `tokens/`, the build stops until the config says where it goes.
 
@@ -39,7 +44,8 @@ Each token file starts with a `$extensions` block describing its Figma collectio
 | Opacity | Percentage (`8`) | Decimal (`0.08`) |
 | Space | px | rem (16px base) |
 | Border width and radius | px | px |
-| Font family | `Inter` | `"Inter"` + system sans-serif fallback stack |
+| Font family primitive | `Inter` | `"Inter"` + system sans-serif fallback stack |
+| Text style font family | Bound variable | Not output. As in Figma, the style uses the bound primitive directly |
 | Font size, line height | px | rem |
 | Font weight | `wght` axis value | Same number (`590`) |
 | Letter spacing | % of font size | em (`2%` → `0.02em`) |
@@ -50,11 +56,11 @@ The fallback stack (`system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Ne
 
 ## The Figma check
 
-[`scripts/figma-export/check-css.mjs`](../scripts/figma-export/check-css.mjs) reads only `tokens.css` and `scripts/figma-export/figma-raw.json`. It shares no code with the export or the build, so a bug in either can't hide itself.
+[`scripts/figma-export/check-css.mjs`](../scripts/figma-export/check-css.mjs) reads only `tokens.css` and `scripts/figma-export/figma-raw.json`. It shares no value logic with the export or the build, so a conversion bug in either can't hide itself. It does share naming (`scripts/token-names.mjs`), because CLAUDE.md requires one source for it. A naming bug would affect the build and the check the same way, so the check can't catch one.
 
-For each mode it:
+For each case (light, dark, and a light section inside a dark page) it:
 
-1. Parses the `:root` and `[data-theme="dark"]` blocks. Dark mode uses `:root` with the dark block on top, as the browser does
+1. Parses the three blocks and applies them in cascade order. Dark mode applies the light block and then the dark block on top, because `<html>` matches `:root` too. Light inside dark applies the light block again on top of dark
 2. Works out the final value of every custom property: following `var()` references, evaluating `calc()`, and mixing `color-mix()` as CSS Color 5 defines it
 3. Works out Figma's value for the same token in the same mode, following aliases and applying opacity to colours
 4. Compares them. Converted units count as matching when they're equivalent (`0.5rem` = `8px`, `0.08` = `8%`, `0em` = `0%`). Colours may differ by half an 8-bit step, because hex rounds each channel
@@ -64,6 +70,8 @@ It also fails if:
 - A Figma alias was output as a resolved value instead of `var()` to the right token
 - A token uses the wrong unit, even if the value is equivalent (spacing in px, for example)
 - A token is missing, or the CSS has a token Figma doesn't
-- The dark block is missing a semantic token, or contains a token from a collection with no dark mode
+- The light or dark block is missing a semantic token, contains a token from a collection without that mode, or repeats a token that's also in the `:root`-only block
+- A selector appears more than once
+- A text style's font family isn't bound to a variable in Figma, the bound variable doesn't render the style's family with the fallback stack, or the CSS gives a text style its own `font-family` property
 
 A fully transparent colour (opacity `0`) is only compared on alpha. Its channels aren't visible, and browsers don't keep them.

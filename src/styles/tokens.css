@@ -35,6 +35,30 @@
   --testds-primitive-space-14: 5rem;
   --testds-primitive-space-15: 5.5rem;
   --testds-primitive-space-16: 6rem;
+  --testds-primitive-font-family-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --testds-typography-headline-100-font-size: 0.9375rem;
+  --testds-typography-headline-100-font-weight: 510;
+  --testds-typography-headline-100-line-height: 1.5rem;
+  --testds-typography-headline-100-letter-spacing: 0em;
+  --testds-typography-headline-200-font-size: 1.25rem;
+  --testds-typography-headline-200-font-weight: 590;
+  --testds-typography-headline-200-line-height: 1.75rem;
+  --testds-typography-headline-200-letter-spacing: 0em;
+  --testds-typography-headline-300-font-size: 2.5rem;
+  --testds-typography-headline-300-font-weight: 590;
+  --testds-typography-headline-300-line-height: 2.75rem;
+  --testds-typography-headline-300-letter-spacing: 0em;
+  --testds-typography-body-100-font-size: 0.8125rem;
+  --testds-typography-body-100-font-weight: 400;
+  --testds-typography-body-100-line-height: 1.3125rem;
+  --testds-typography-body-100-letter-spacing: 0em;
+  --testds-typography-body-200-font-size: 0.9375rem;
+  --testds-typography-body-200-font-weight: 400;
+  --testds-typography-body-200-line-height: 1.5rem;
+  --testds-typography-body-200-letter-spacing: 0em;
+}
+
+:root, [data-theme="light"] {
   --testds-semantic-color-background-primary: var(--testds-primitive-color-neutral-1);
   --testds-semantic-color-background-secondary-default: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-2) * 100%), transparent);
   --testds-semantic-color-background-secondary-hover: color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-3) * 100%), transparent);
@@ -44,31 +68,6 @@
   --testds-semantic-color-text-standard: var(--testds-primitive-color-neutral-6);
   --testds-semantic-color-text-strong: var(--testds-primitive-color-neutral-7);
   --testds-semantic-color-icon-strong: var(--testds-primitive-color-neutral-7);
-  --testds-typography-headline-100-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --testds-typography-headline-100-font-size: 0.9375rem;
-  --testds-typography-headline-100-font-weight: 510;
-  --testds-typography-headline-100-line-height: 1.5rem;
-  --testds-typography-headline-100-letter-spacing: 0em;
-  --testds-typography-headline-200-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --testds-typography-headline-200-font-size: 1.25rem;
-  --testds-typography-headline-200-font-weight: 590;
-  --testds-typography-headline-200-line-height: 1.75rem;
-  --testds-typography-headline-200-letter-spacing: 0em;
-  --testds-typography-headline-300-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --testds-typography-headline-300-font-size: 2.5rem;
-  --testds-typography-headline-300-font-weight: 590;
-  --testds-typography-headline-300-line-height: 2.75rem;
-  --testds-typography-headline-300-letter-spacing: 0em;
-  --testds-typography-body-100-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --testds-typography-body-100-font-size: 0.8125rem;
-  --testds-typography-body-100-font-weight: 400;
-  --testds-typography-body-100-line-height: 1.3125rem;
-  --testds-typography-body-100-letter-spacing: 0em;
-  --testds-typography-body-200-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --testds-typography-body-200-font-size: 0.9375rem;
-  --testds-typography-body-200-font-weight: 400;
-  --testds-typography-body-200-line-height: 1.5rem;
-  --testds-typography-body-200-letter-spacing: 0em;
 }
 
 [data-theme="dark"] {
