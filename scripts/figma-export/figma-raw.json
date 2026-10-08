@@ -1021,8 +1021,8 @@
         "family": "Inter",
         "style": "Medium",
         "variationSettings": {
-          "wght": 500,
-          "slnt": 0
+          "slnt": 0,
+          "wght": 510
         }
       },
       "fontSize": 15,

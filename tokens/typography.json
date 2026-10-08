@@ -14,7 +14,7 @@
           "value": 15,
           "unit": "px"
         },
-        "fontWeight": 500,
+        "fontWeight": 510,
         "lineHeight": {
           "value": 24,
           "unit": "px"
@@ -32,8 +32,8 @@
             "family": "Inter",
             "style": "Medium",
             "variationSettings": {
-              "wght": 500,
-              "slnt": 0
+              "slnt": 0,
+              "wght": 510
             }
           },
           "order": 2

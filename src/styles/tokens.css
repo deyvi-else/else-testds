@@ -38,7 +38,7 @@
   --testds-primitive-font-family-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --testds-typography-headline-100-font-family: var(--testds-primitive-font-family-sans);
   --testds-typography-headline-100-font-size: 0.9375rem;
-  --testds-typography-headline-100-font-weight: 500;
+  --testds-typography-headline-100-font-weight: 510;
   --testds-typography-headline-100-line-height: 1.5rem;
   --testds-typography-headline-100-letter-spacing: 0em;
   --testds-typography-headline-200-font-family: var(--testds-primitive-font-family-sans);
