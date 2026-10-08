@@ -34,3 +34,21 @@ See [token-export.md](token-export.md) for the export process and file format.
 **Figma FLOAT variables have no unit.** The export types them by the category segment of the name: `opacity` is a number, `space` and `border` are px dimensions.
 
 **Variable scopes are broad.** All primitive colours have `ALL_SCOPES`, and every `space` primitive is scoped to corner radius as well as gap and width/height. This doesn't affect the export, but it means designers can apply space tokens to radii in Figma.
+
+## 2026-10-08: Building tokens.css
+
+See [token-build.md](token-build.md) for the build and the Figma check.
+
+**Modes need one Style Dictionary instance each.** The light and dark files share token paths, and Style Dictionary treats that as a collision. The build runs one instance per CSS block (`:root`, `[data-theme="dark"]`) and joins the output. Style Dictionary's built-in reference output warns when a reference points at a token outside the output (the dark block referencing primitives), so a small custom format writes `var()` for references instead.
+
+**File-level metadata collides on merge.** The export puts a `$extensions` block at the root of each token file, recording the Figma collection and mode. Style Dictionary merges all source files into one tree, so these blocks collided (4 collisions). A custom parser drops them on read. The metadata stays in the files for people and tools that read them directly.
+
+**Colour with opacity can't use Style Dictionary's reference output.** For object values, Style Dictionary puts references back by searching the output for each referenced token's resolved value. That's fragile: the opacity `0.05` could match inside another number. The `color-mix()` transform builds the `var()` references from the original token value instead.
+
+**A fully transparent colour loses its hue in the browser.** `border/invisible` is black at 0% in light mode and white at 0% in dark mode. Browsers resolve both to `color(srgb 0 0 0 / 0)`. They look identical, and the CSS still references the right primitives, but the Figma check can only compare alpha for these.
+
+**The font fallback stack isn't in Figma.** CLAUDE.md asks for a system sans-serif fallback stack without saying which. The build uses `system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`.
+
+**Typography order differs from Figma.** Figma lists `headline/300`, `200`, `100`. Style names ending in numbers become integer-like JSON keys, which JavaScript always orders numerically, so the CSS lists 100, 200, 300. Only the order changes, not the values.
+
+**Checking the CSS in a browser confirmed the Node check.** Computed styles in Storybook matched Figma for every semantic colour in both modes, and for typography (`headline/300` renders at 40px / 44px / weight 590 with Inter's variable font loaded). Borders computed as 0.8px at the test display's scaling. That's the browser snapping to device pixels, not the token.

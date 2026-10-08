@@ -9,7 +9,8 @@
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "tokens:export": "node scripts/figma-export/to-dtcg.mjs"
+    "tokens:export": "node scripts/figma-export/to-dtcg.mjs",
+    "tokens:check": "node scripts/figma-export/check-css.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

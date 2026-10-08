@@ -41,6 +41,18 @@ The converter throws if it finds something it can't represent yet. For example: 
 
 Check the diff of `figma-raw.json` and `tokens/` before committing. Renames show up as the same `variableId` under a new path.
 
+### 4. Build and check the CSS
+
+```bash
+npm run tokens
+```
+
+```bash
+npm run tokens:check
+```
+
+See [token-build.md](token-build.md).
+
 ## File structure
 
 ```
@@ -60,7 +72,7 @@ There is **one file per collection per mode**, named `<collection>.<mode>.json`.
 
 Each file starts with a root `$extensions` block that records the Figma file key, collection, collection ID, mode, mode ID and whether it's the collection's default mode.
 
-> Because the light and dark files share token paths, the current Style Dictionary config reports collisions when it loads `tokens/**/*.json`. Step 4 changes the config to build each mode separately.
+> Because the light and dark files share token paths, they can't be loaded into one Style Dictionary instance. The build handles each mode separately. See [token-build.md](token-build.md).
 
 ## Token format
 
@@ -120,7 +132,7 @@ Why this shape:
 - **It mirrors Figma.** It is the same structure as the Plugin API value, with the aliases written as DTCG references
 - **Both references are real references.** Style Dictionary resolves and checks references inside object values. A renamed or deleted opacity primitive causes a broken reference error, so the build can't miss it
 - **It fails loudly.** A tool that doesn't know this shape can't turn the object into a colour, so it errors or outputs something obviously wrong. The alternative is to put the colour reference in `$value` and the opacity in `$extensions`. That is valid DTCG, but any tool that ignores the extension would silently output an opaque colour
-- **It maps directly to the CSS.** CLAUDE.md asks for `color-mix(in srgb, var(<color>) calc(var(<opacity>) * 100%), transparent)`. A Style Dictionary transform in step 4 can build this from the two references
+- **It maps directly to the CSS.** CLAUDE.md asks for `color-mix(in srgb, var(<color>) calc(var(<opacity>) * 100%), transparent)`. The `testds/color/mix` transform builds this from the two references
 
 The downside: it's not valid DTCG for `$type: color`, so a strict DTCG validator will reject these tokens.
 

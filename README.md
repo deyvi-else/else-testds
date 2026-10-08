@@ -6,7 +6,7 @@ See [CLAUDE.md](CLAUDE.md) for the full conventions.
 
 ## Stack
 
-React, TypeScript, CSS Modules, CSS custom properties, Style Dictionary v4 and Storybook (Vite).
+React, TypeScript, CSS Modules, CSS custom properties, Style Dictionary v5 and Storybook (Vite).
 
 ## Getting started
 
@@ -21,7 +21,9 @@ Storybook runs at http://localhost:6006. Use the **Theme** toolbar toggle to swi
 
 | Script | What it does |
 | --- | --- |
-| `npm run tokens` | Builds `src/styles/tokens.css` from the DTCG JSON in `tokens/` |
+| `npm run tokens:export` | Converts the Figma snapshot into DTCG JSON in `tokens/` ([docs](docs/token-export.md)) |
+| `npm run tokens` | Builds `src/styles/tokens.css` from the DTCG JSON in `tokens/` ([docs](docs/token-build.md)) |
+| `npm run tokens:check` | Checks every value in `tokens.css` against the Figma snapshot, in both modes |
 | `npm run storybook` | Starts Storybook |
 | `npm run build-storybook` | Builds a static Storybook |
 | `npm run typecheck` | Runs TypeScript |
@@ -39,4 +41,4 @@ docs/learnings.md        Anything that didn't translate cleanly from Figma
 
 ## Changing tokens
 
-Change them in Figma, re-export to `tokens/`, then run `npm run tokens`. Never edit generated files.
+Change them in Figma, re-export to `tokens/` ([how](docs/token-export.md)), run `npm run tokens`, then run `npm run tokens:check`. Never edit generated files.
