@@ -324,15 +324,26 @@ for (const { name: caseName, figmaMode: mode, scope } of CASES) {
   for (const style of raw.textStyles) {
     const property = (name) => cssVar(typographyPath(figmaPath(style.name), name));
 
-    // Font family must be bound to a variable in Figma, and output as a
-    // reference to it, never as a fixed family list.
-    compare(property('fontFamily'), (actual, declared) => {
-      const bound = style.boundVariables?.fontFamily;
-      if (!isAlias(bound)) return 'font family is not bound to a variable in Figma';
-      const reference = `var(${cssName(variablesById.get(bound.id).name)})`;
-      if (declared !== reference) return `should be ${reference}, declared as "${declared}"`;
-      return checkFontFamily(actual, style.fontName.family);
-    });
+    // As in Figma, a text style has no font family of its own. It must be
+    // bound to a variable, and that variable's custom property must render
+    // the family the style uses. The style itself outputs no font-family.
+    const bound = style.boundVariables?.fontFamily;
+    if (!isAlias(bound)) {
+      fail(caseName, style.name, 'font family is not bound to a variable in Figma');
+    } else {
+      const name = cssName(variablesById.get(bound.id).name);
+      try {
+        const message = scope.has(name)
+          ? checkFontFamily(evaluate(`var(${name})`, scope), style.fontName.family)
+          : `bound font family ${name} is missing from the CSS`;
+        if (message) fail(caseName, style.name, message);
+      } catch (error) {
+        fail(caseName, style.name, error.message);
+      }
+    }
+    if (scope.has(property('fontFamily'))) {
+      fail(caseName, property('fontFamily'), 'text styles have no font family of their own; use the bound primitive');
+    }
 
     const remPx = (name, figmaPx) =>
       compare(property(name), (actual, declared) => {

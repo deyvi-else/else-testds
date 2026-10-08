@@ -203,9 +203,13 @@ interface TypographyValue {
 
 export interface TypographyProperty {
   property: keyof TypographyValue;
+  /**
+   * The custom property to use. For font family, that's the primitive the
+   * style is bound to: as in Figma, a text style has no font family of its own.
+   */
   cssVar: string;
   figmaValue: string;
-  /** The primitive this property references, if any */
+  /** The primitive this property is bound to in Figma, if any */
   reference?: string[];
 }
 
@@ -247,7 +251,7 @@ export const textStyles: TextStyle[] = [...typographyTokens]
         const reference = referencePath(v);
         return {
           property,
-          cssVar: cssVar(typographyPath(token.path, property)),
+          cssVar: cssVar(reference ?? typographyPath(token.path, property)),
           figmaValue: reference ? resolve(v) : typeof v === 'object' ? `${v.value}${v.unit}` : String(v),
           reference,
         };

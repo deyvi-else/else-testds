@@ -52,12 +52,12 @@ To change a token, change it in Figma and re-export. Never edit generated files 
   - Opacity: Figma stores percentages (`5`). Output as decimals (`0.05`)
 - **Modes:** The `Semantics` collection has two modes, light and dark. Light is the default and outputs on both :root and [data-theme="light"], so light sections can sit inside dark ones
 - **Token names and groups:** A token name must never also be the start of another token's name (e.g. `secondary` and `secondary/hover`). DTCG JSON can't represent a value that is also a group. Use an explicit name for the default, such as `secondary/default`
-- **Typography:** Defined by Figma text styles. Font family comes from a Figma string variable bound to each text style. Each text style outputs --testds-typography-<text style name>-<property> for font-family, font-size, font-weight, line-height and letter-spacing, with font-family as a reference to the primitive, e.g. var(--testds-primitive-font-family-sans). If a text style's font family isn't bound to a variable, flag it
+- **Typography:** Defined by Figma text styles. Font family comes from a Figma string variable bound to each text style. As in Figma, a text style has no font family of its own: it uses the font family primitive it's bound to, e.g. var(--testds-primitive-font-family-sans). Each text style outputs --testds-typography-<text style name>-<property> for font-size, font-weight, line-height and letter-spacing only. If a text style's font family isn't bound to a variable, flag it
   - Font size and line height in rem
   - Font weight as the exact numeric weight Figma renders, including variable weight axis values (e.g. 510, 590). Never map from the style name
   - Letter spacing: Figma stores a percentage of font size. Output in em (`2%` becomes `0.02em`)
   - Font is Inter, loaded from Google Fonts as a variable font covering the full weight range. Fallback stack: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
-  - Components apply typography by referencing these properties in their CSS Modules
+  - Components apply typography by referencing these properties in their CSS Modules, plus the font family primitive the text style is bound to in Figma
 - **Effects:** None currently. If effect styles are added in Figma, include them in the export
 - **One source for naming logic:** The code that turns Figma names into CSS names lives in one shared module, used by the build, the docs and the checks. Never duplicate it
 
@@ -100,7 +100,7 @@ Examples:
 ## Component rules
 
 - **Colour:** Components use semantic or component colour tokens only. Never use primitive colour or opacity tokens to build a colour in a component
-- **Spacing, border radius and border width:** Components may use primitive tokens directly, as no semantic tokens exist for these yet. If semantic or component tokens are added later, use those instead
+- **Spacing, border radius, border width and font family:** Components may use primitive tokens directly, as no semantic tokens exist for these yet. If semantic or component tokens are added later, use those instead
 - **Opacity:** Primitive opacity tokens may be used for element opacity (the `opacity` property) only
 - Never hard-code values (colours, sizes, spacing, radii, opacity) in component CSS
 - If a design uses a value that doesn't match any token, flag it instead of hard-coding or rounding to the nearest token

@@ -47,8 +47,7 @@ const BLOCKS = [
 
 // Font family primitives (Inter, from Figma) are followed by a system
 // sans-serif fallback stack. The stack is specified in CLAUDE.md, not Figma.
-// Keep the two in sync. Typography tokens reference the primitive, so they get
-// the stack through it.
+// Keep the two in sync.
 const FONT_FALLBACK = 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 // --- Parsing ---------------------------------------------------------------
@@ -228,6 +227,18 @@ StyleDictionary.registerFormat({
   },
 });
 
+// As in Figma, a text style has no font family of its own: it's bound to a
+// font family primitive, which components use directly (CLAUDE.md). So the
+// expanded fontFamily of each text style isn't output. It must be a reference,
+// or the style would lose its font family.
+const isStyleFontFamily = (token) => {
+  if (!isTypography(token) || token.path.at(-1) !== 'fontFamily') return false;
+  if (!referencePath(token.original.$value)) {
+    throw new Error(`${token.name}: font family must reference a font family primitive, got ${JSON.stringify(token.original.$value)}`);
+  }
+  return true;
+};
+
 // Every type must have a conversion. Anything unexpected fails the build.
 const KNOWN_TYPES = new Set(['color', 'number', 'dimension', 'fontFamily', 'fontWeight']);
 
@@ -257,7 +268,7 @@ const buildBlock = async ({ selector, source, output }) => {
           {
             destination: 'block.css',
             format: 'testds/css-block',
-            filter: (token) => output.some((file) => token.filePath.endsWith(file)),
+            filter: (token) => output.some((file) => token.filePath.endsWith(file)) && !isStyleFontFamily(token),
             options: { selector },
           },
         ],

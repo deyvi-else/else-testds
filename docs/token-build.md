@@ -45,7 +45,7 @@ Each token file starts with a `$extensions` block describing its Figma collectio
 | Space | px | rem (16px base) |
 | Border width and radius | px | px |
 | Font family primitive | `Inter` | `"Inter"` + system sans-serif fallback stack |
-| Text style font family | Bound variable | `var(--testds-primitive-font-family-sans)` |
+| Text style font family | Bound variable | Not output. As in Figma, the style uses the bound primitive directly |
 | Font size, line height | px | rem |
 | Font weight | `wght` axis value | Same number (`590`) |
 | Letter spacing | % of font size | em (`2%` → `0.02em`) |
@@ -72,6 +72,6 @@ It also fails if:
 - A token is missing, or the CSS has a token Figma doesn't
 - The light or dark block is missing a semantic token, contains a token from a collection without that mode, or repeats a token that's also in the `:root`-only block
 - A selector appears more than once
-- A text style's font family isn't bound to a variable in Figma, or isn't output as exactly `var()` to that variable
+- A text style's font family isn't bound to a variable in Figma, the bound variable doesn't render the style's family with the fallback stack, or the CSS gives a text style its own `font-family` property
 
 A fully transparent colour (opacity `0`) is only compared on alpha. Its channels aren't visible, and browsers don't keep them.

@@ -67,28 +67,26 @@ const propertyColumns: Column<TypographyProperty>[] = [
   { header: 'Property', cell: (row) => <code className={styles.code}>{CSS_PROPERTY[row.property]}</code> },
   {
     header: 'Token',
-    cell: (row) => (
-      <code className={styles.code}>
-        <Name>{row.cssVar}</Name>
-      </code>
-    ),
+    cell: (row) =>
+      row.reference ? (
+        <TokenName path={row.reference} />
+      ) : (
+        <code className={styles.code}>
+          <Name>{row.cssVar}</Name>
+        </code>
+      ),
   },
   { header: 'Figma', cell: (row) => <code className={styles.code}>{row.figmaValue}</code> },
   { header: 'CSS', cell: (row) => <CssValue name={row.cssVar} /> },
   {
-    header: 'References',
+    header: 'Source',
     cell: (row) =>
       row.reference ? (
-        <div className={styles.stack}>
-          <code className={styles.code}>
-            <Name>{`var(${cssVar(row.reference)})`}</Name>
-          </code>
-          <span className={styles.subtle}>
-            <Name>{figmaName(row.reference)}</Name>
-          </span>
-        </div>
+        <span className={styles.subtle}>
+          Bound to <Name>{figmaName(row.reference)}</Name> in Figma
+        </span>
       ) : (
-        <span className={styles.subtle}>None</span>
+        <span className={styles.subtle}>Text style</span>
       ),
   },
 ];
@@ -100,8 +98,9 @@ export const Typography: Story = {
       intro={
         <p>
           Text styles from Figma, in Figma&apos;s order. Each specimen is set using only the style&apos;s custom
-          properties from tokens.css. Font family is bound to a variable in Figma, so each style references a font
-          family primitive, and the build adds the fallback stack to the primitive.
+          properties from tokens.css. As in Figma, a text style has no font family of its own: it&apos;s bound to a
+          font family primitive, which the specimen uses directly. The build adds the fallback stack to the
+          primitive.
         </p>
       }
     >

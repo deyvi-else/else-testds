@@ -11,7 +11,7 @@
   padding: var(--testds-primitive-space-9) var(--testds-primitive-space-8);
   background-color: var(--testds-semantic-color-background-primary);
   color: var(--testds-semantic-color-text-standard);
-  font-family: var(--testds-typography-body-200-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-body-200-font-size);
   font-weight: var(--testds-typography-body-200-font-weight);
   line-height: var(--testds-typography-body-200-line-height);
@@ -21,7 +21,7 @@
 .title {
   margin: 0 0 var(--testds-primitive-space-5);
   color: var(--testds-semantic-color-text-strong);
-  font-family: var(--testds-typography-headline-300-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-headline-300-font-size);
   font-weight: var(--testds-typography-headline-300-font-weight);
   line-height: var(--testds-typography-headline-300-line-height);
@@ -31,7 +31,7 @@
 .heading {
   margin: 0 0 var(--testds-primitive-space-3);
   color: var(--testds-semantic-color-text-strong);
-  font-family: var(--testds-typography-headline-200-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-headline-200-font-size);
   font-weight: var(--testds-typography-headline-200-font-weight);
   line-height: var(--testds-typography-headline-200-line-height);
@@ -41,7 +41,7 @@
 .subheading {
   margin: 0 0 var(--testds-primitive-space-3);
   color: var(--testds-semantic-color-text-strong);
-  font-family: var(--testds-typography-headline-100-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-headline-100-font-size);
   font-weight: var(--testds-typography-headline-100-font-weight);
   line-height: var(--testds-typography-headline-100-line-height);
@@ -72,7 +72,7 @@
 }
 
 .label {
-  font-family: var(--testds-typography-headline-100-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-weight: var(--testds-typography-headline-100-font-weight);
 }
 
@@ -132,7 +132,7 @@
 
 .table th {
   color: var(--testds-semantic-color-text-strong);
-  font-family: var(--testds-typography-headline-100-font-family);
+  font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-headline-100-font-size);
   font-weight: var(--testds-typography-headline-100-font-weight);
   line-height: var(--testds-typography-headline-100-line-height);
