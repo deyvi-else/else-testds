@@ -1,4 +1,4 @@
-import { existsSync, rmSync, writeFileSync } from 'node:fs';
+import { rmSync, writeFileSync } from 'node:fs';
 import StyleDictionary from 'style-dictionary';
 
 const OUTPUT = 'src/styles/tokens.css';
@@ -33,11 +33,14 @@ const sd = new StyleDictionary({
 // Remove the previous output so a stale file never survives a rebuild.
 rmSync(OUTPUT, { force: true });
 
-await sd.buildAllPlatforms();
+await sd.hasInitialized;
 
-// Style Dictionary skips the file when there are no tokens. Always write it so
-// Storybook's import resolves before the first Figma export.
-if (!existsSync(OUTPUT)) {
+// With no tokens, Style Dictionary v5 writes an empty `:root {}` (v4 skipped
+// the file). Write an explicit placeholder instead so the empty state is
+// obvious, and so Storybook's import resolves before the first Figma export.
+if (Object.keys(sd.tokens).length > 0) {
+  await sd.buildAllPlatforms();
+} else {
   writeFileSync(
     OUTPUT,
     [

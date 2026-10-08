@@ -18,7 +18,7 @@ The priority is fidelity, not speed. Every output must be an exact translation o
 - React + TypeScript
 - CSS Modules for component styles
 - CSS custom properties for tokens
-- Style Dictionary v4 to build tokens from DTCG JSON
+- Style Dictionary (latest stable) to build tokens from DTCG JSON
 - Storybook (Vite builder) for documentation and review
 
 ## Repo structure
