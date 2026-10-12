@@ -37,9 +37,17 @@ const meta = {
     href: '#',
     htmlSectionHeading: 'h3',
   },
+  // Labels match the Figma property names. href and htmlSectionHeading aren't in Figma
   argTypes: {
-    chooseIcon: { control: false },
-    htmlSectionHeading: { control: 'select', options: ['h2', 'h3', 'h4', 'h5', 'h6'] },
+    chooseIcon: { name: 'Choose icon', control: false },
+    titleText: { name: 'Title text' },
+    descriptionText: { name: 'Description text' },
+    href: { name: 'Link destination' },
+    htmlSectionHeading: {
+      name: 'HTML section heading',
+      control: 'select',
+      options: ['h2', 'h3', 'h4', 'h5', 'h6'],
+    },
   },
 } satisfies Meta<typeof Card>;
 
