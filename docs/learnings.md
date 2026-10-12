@@ -143,7 +143,7 @@ Source: the Card component set (Figma node 5:192) and the `20px / Placeholder` i
 
 **The title renders with a different version of Inter, not a different optical size.** Figma's Inter has `slnt` and `wght` axes, which is Inter 3.x. Google Fonts serves Inter 4.001, and with the `wght@100..900` request it has only a `wght` axis, so `font-optical-sizing` has nothing to act on (setting `opsz` to 14 or 32 changes nothing). Zoomed in, the letters are the same height and weight class, but the "t" crossbar reaches further left in Inter 4, and "Title" sets about 0.5px narrower and sits 0.5px lower ([card-title-zoom.png](comparisons/card-title-zoom.png), Figma on top). Matching exactly would mean self-hosting Inter 3.x, or Figma moving to Inter 4.
 
-**Chrome on macOS draws text heavier than Figma.** In the pixel comparison, the title had 7% more ink than Figma and the description 19%. With `-webkit-font-smoothing: antialiased`, both came within 0.3% and 3.5%. That's a rendering setting for the whole page rather than a design value, so it wasn't added to the Card. If it's wanted, it belongs in a global base stylesheet, which doesn't exist yet.
+**Chrome on macOS draws text heavier than Figma.** In the pixel comparison, the title had 7% more ink than Figma and the description 19%. With `-webkit-font-smoothing: antialiased`, both came within 0.3% and 3.5%. That's a rendering setting for the whole page rather than a design value, so it wasn't added to the Card. If it's wanted, it belongs in a global base stylesheet, which doesn't exist yet. **Resolved:** `src/styles/base.css` now sets it for the whole page (see "Base stylesheet and font smoothing" below).
 
 **The pseudo-state addon is new.** `storybook-addon-pseudo-states` (10.6.1, matching Storybook) was added. It rewrites `:hover` rules, including those inside `@media (hover: hover)`, so a story can show the real hover CSS without a mouse, and without a prop.
 
@@ -156,3 +156,21 @@ Source: the Card component set (Figma node 5:192) and the `20px / Placeholder` i
 **File names are turned back into Figma names in one place.** `src/stories/icons/icons.tsx` loads the SVGs and works out each icon's size, name and Figma name from its file name. The Icons page and the Card's Choose icon control both use it, so the 20px filter and the labels can't drift apart. Turning a name back is only exact for names written like the current ones: a size, then a name with only its first letter capitalised (`20px / Mini-golf`). A name like `20px / Golf Ball` would come back as `Golf ball`. If that happens, the export should record each icon's Figma name, the way `tokens/` records Figma metadata.
 
 **The icons are listed alphabetically, not in Figma's order.** The files don't record where each icon sits on the Figma page.
+
+## 2026-10-12: Base stylesheet and font smoothing
+
+**Text is now drawn with antialiased smoothing.** A new hand-written stylesheet, `src/styles/base.css`, sets `-webkit-font-smoothing: antialiased` and `-moz-osx-font-smoothing: grayscale` on `body`. Storybook loads it after `tokens.css`, and any app using the design system should load it too. It's set on the page rather than in components, so all text on a page renders the same way. It only affects macOS; other systems ignore it.
+
+**Why:** Chrome on macOS draws text heavier than Figma by default. linear.app/docs, which the Card is based on, uses the same font (Inter) and the same weights (510 and 400), and looks thinner because it sets this same smoothing on its pages.
+
+**Result, measured against Figma's 2× render of the Card (ink in each area compared with Figma):**
+
+| Area | Before | After |
+| --- | --- | --- |
+| Title | +6.3% | +0.3% |
+| Description | +16.8% | +2.8% |
+| Icon | +0.5% | +0.5% |
+
+The icon is unchanged, as expected: smoothing only applies to text. The comparison images in [comparisons/](comparisons/) were redrawn with the new rendering. What's left in the description is the letters sitting fractions of a pixel apart, because Figma uses Inter 3 and the browser Inter 4.
+
+**Other differences from Linear, not followed.** Linear also tightens letter spacing slightly (about −1.1% on the title and −1.3% on the description), uses a 14px description where Figma has 13px, and turns on two of Inter's alternate letters (`cv01`, a different "1", and `ss03`, rounder quotes and commas). These are type decisions, so they'd start in Figma's text styles, not in code.

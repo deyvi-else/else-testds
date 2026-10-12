@@ -1,0 +1,11 @@
+/*
+ * Base styles for any page that uses the design system. Hand-written, unlike tokens.css.
+ *
+ * Font smoothing: browsers on macOS draw text heavier than Figma does by default. Antialiased
+ * smoothing draws thinner strokes, close to Figma's rendering. It only affects macOS; other
+ * systems ignore it.
+ */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

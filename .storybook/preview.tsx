@@ -2,6 +2,7 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 import { GLOBALS_UPDATED, SET_GLOBALS } from 'storybook/internal/core-events';
 import { addons } from 'storybook/preview-api';
 import '../src/styles/tokens.css';
+import '../src/styles/base.css';
 
 type Theme = 'light' | 'dark';
 
