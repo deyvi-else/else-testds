@@ -106,10 +106,21 @@ Examples:
 - If a design uses a value that doesn't match any token, flag it instead of hard-coding or rounding to the nearest token
 - One folder per component with its TSX, CSS Module and story
 - Props should map to Figma component properties and variants, using the same names where possible
-- Build every state shown in Figma (hover, focus, disabled, etc.) and give each its own story
+- Build every state shown in Figma (hover, focus, disabled, etc.)
 - Use semantic HTML and meet WCAG 2.2 AA
 - **Focus states:** Use browser default focus styles for now. Never remove or override them (no `outline: none`), and make sure every interactive element is focusable with the keyboard. Custom focus styles may be added later with dedicated tokens
 - Storybook documentation pages may hard-code layout-only values (swatch sizes, column widths, monospace font) where no token exists. Component CSS may not
+- A Figma variant property named Interaction state maps to CSS pseudo-classes, never a prop: Default is the base style, Hover is :hover, Pressed is :active. Wrap hover styles in @media (hover: hover) so they don't stick on touch screens. Stories show each state using a pseudo-state addon. Any other variant property (such as Selected or Disabled) is a prop
+- Clickable components are built as real links or buttons, never a clickable div
+- Icon slots accept any icon. The slot size comes from the icon component's size in Figma (e.g. 20px) and may be written as a fixed value until size tokens exist. Icons take their colour from the slot via currentColor, set using the semantic icon colour token
+- Component width follows Figma's sizing: Hug contents fits the content, Fill container fills the available space. A fixed width on a component's outer frame is ambiguous, so check the component-specific rules below and ask if the component isn't listed
+
+## Component-specific rules
+
+### Card
+
+- Fills the width of its container. 242px in Figma is a preview size
+- One story, showing the Default interaction state at its Figma width (242px). No separate stories for Hover, dark mode, other widths or long text. Readers change the text through the story's controls, see Hover by hovering with the mouse or with the pseudo-states toolbar button, and switch light and dark with the Theme toolbar
 
 ## Definition of done
 
