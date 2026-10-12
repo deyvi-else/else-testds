@@ -148,3 +148,11 @@ Source: the Card component set (Figma node 5:192) and the `20px / Placeholder` i
 **The pseudo-state addon is new.** `storybook-addon-pseudo-states` (10.6.1, matching Storybook) was added. It rewrites `:hover` rules, including those inside `@media (hover: hover)`, so a story can show the real hover CSS without a mouse, and without a prop.
 
 **One story instead of nine.** The first version had stories for Default, Hover, dark mode, 360px and long text, as the brief and CLAUDE.md's global rules asked. That was too many pages for one component. CLAUDE.md now has a Card section: one Default story at 242px. Readers change the text with the controls, see Hover by hovering or with the pseudo-states toolbar button, and switch themes with the Theme toolbar. The global rules for a story per state and a second width were removed as too early to set for every component. The comparisons and checks above were made with the earlier stories. One consequence: Storybook's a11y panel only checks what's on screen, so it catches the light Hover contrast failure only while Hover is switched on in the toolbar.
+
+## 2026-10-12: Icons page
+
+**Foundations → Icons shows every exported icon.** It lists the icons in `src/stories/icons/`, grouped by the size at the start of their Figma name, with each icon drawn at its own size, its measured size, its Figma name and its file. All 12 render at 20 × 20 in `icon/strong`, in both themes.
+
+**File names are turned back into Figma names in one place.** `src/stories/icons/icons.tsx` loads the SVGs and works out each icon's size, name and Figma name from its file name. The Icons page and the Card's Choose icon control both use it, so the 20px filter and the labels can't drift apart. Turning a name back is only exact for names written like the current ones: a size, then a name with only its first letter capitalised (`20px / Mini-golf`). A name like `20px / Golf Ball` would come back as `Golf ball`. If that happens, the export should record each icon's Figma name, the way `tokens/` records Figma metadata.
+
+**The icons are listed alphabetically, not in Figma's order.** The files don't record where each icon sits on the Figma page.

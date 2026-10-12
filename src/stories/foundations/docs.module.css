@@ -244,3 +244,16 @@
   margin: 0 0 var(--testds-primitive-space-5);
   color: var(--testds-semantic-color-text-strong);
 }
+
+/* --- Icons --- */
+
+/* Fits the icon's own size, and colours it with the semantic icon colour via currentColor */
+.icon {
+  display: inline-flex;
+  align-self: flex-start;
+  color: var(--testds-semantic-color-icon-strong);
+}
+
+.icon svg {
+  display: block;
+}

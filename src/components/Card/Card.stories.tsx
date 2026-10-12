@@ -1,26 +1,12 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
+import { Icon, iconsOfSize } from '../../stories/icons/icons';
 import { Card } from './Card';
 
-// Icons exported from the Figma Icons page, named after their Figma names ("20px / Mini-golf"
-// becomes 20px-mini-golf.svg). The card's icon slot is 20px, so only icons whose Figma name
-// starts with "20px" are offered. Each is inlined so its colours can use currentColor.
-const iconFiles = import.meta.glob<string>('../../stories/icons/20px-*.svg', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-});
-
-const icons = Object.fromEntries(
-  Object.entries(iconFiles).map(([path, svg]) => {
-    const name = path.match(/20px-(.+)\.svg$/)![1];
-    return [name, <span dangerouslySetInnerHTML={{ __html: svg }} />];
-  }),
-);
-
+// The card's icon slot is 20px, so only icons whose Figma name starts with "20px" are offered.
 // Labels repeat the part of the Figma name after "20px / ", e.g. Mini-golf
-const iconLabels = Object.fromEntries(
-  Object.keys(icons).map((name) => [name, name.charAt(0).toUpperCase() + name.slice(1)]),
-);
+const slotIcons = iconsOfSize('20px');
+const icons = Object.fromEntries(slotIcons.map((icon) => [icon.id, <Icon icon={icon} />]));
+const iconLabels = Object.fromEntries(slotIcons.map((icon) => [icon.id, icon.name]));
 
 // Paints the page background so the card's transparent fill sits on it, as in Figma.
 // The padding matches the 20px around the variants in the Figma component set.
