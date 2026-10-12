@@ -1,9 +1,26 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
-import placeholderSvg from '../../stories/icons/placeholder.svg?raw';
 import { Card } from './Card';
 
-// Figma: 20px / Placeholder, exported as SVG. Inlined so its strokes can use currentColor
-const PlaceholderIcon = () => <span dangerouslySetInnerHTML={{ __html: placeholderSvg }} />;
+// Icons exported from the Figma Icons page, named after their Figma names ("20px / Mini-golf"
+// becomes 20px-mini-golf.svg). The card's icon slot is 20px, so only icons whose Figma name
+// starts with "20px" are offered. Each is inlined so its colours can use currentColor.
+const iconFiles = import.meta.glob<string>('../../stories/icons/20px-*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const icons = Object.fromEntries(
+  Object.entries(iconFiles).map(([path, svg]) => {
+    const name = path.match(/20px-(.+)\.svg$/)![1];
+    return [name, <span dangerouslySetInnerHTML={{ __html: svg }} />];
+  }),
+);
+
+// Labels repeat the part of the Figma name after "20px / ", e.g. Mini-golf
+const iconLabels = Object.fromEntries(
+  Object.keys(icons).map((name) => [name, name.charAt(0).toUpperCase() + name.slice(1)]),
+);
 
 // Paints the page background so the card's transparent fill sits on it, as in Figma.
 // The padding matches the 20px around the variants in the Figma component set.
@@ -31,7 +48,8 @@ const meta = {
   decorators: [withFrame],
   parameters: { layout: 'fullscreen' },
   args: {
-    chooseIcon: <PlaceholderIcon />,
+    // Figma's default for Choose icon
+    chooseIcon: 'placeholder',
     titleText: 'Title',
     descriptionText: 'Description which can span across multiple lines until it eventually truncates.',
     href: '#',
@@ -39,7 +57,12 @@ const meta = {
   },
   // Labels match the Figma property names. href and htmlSectionHeading aren't in Figma
   argTypes: {
-    chooseIcon: { name: 'Choose icon', control: false },
+    chooseIcon: {
+      name: 'Choose icon',
+      options: Object.keys(icons),
+      mapping: icons,
+      control: { type: 'select', labels: iconLabels },
+    },
     titleText: { name: 'Title text' },
     descriptionText: { name: 'Description text' },
     href: { name: 'Link destination' },
