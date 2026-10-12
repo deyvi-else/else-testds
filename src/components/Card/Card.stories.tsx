@@ -35,11 +35,11 @@ const meta = {
     titleText: 'Title',
     descriptionText: 'Description which can span across multiple lines until it eventually truncates.',
     href: '#',
-    headingLevel: 3,
+    htmlSectionHeading: 'h3',
   },
   argTypes: {
     chooseIcon: { control: false },
-    headingLevel: { control: 'select', options: [2, 3, 4, 5, 6] },
+    htmlSectionHeading: { control: 'select', options: ['h2', 'h3', 'h4', 'h5', 'h6'] },
   },
 } satisfies Meta<typeof Card>;
 

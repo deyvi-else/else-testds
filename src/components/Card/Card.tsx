@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import styles from './Card.module.css';
 
-export type CardHeadingLevel = 2 | 3 | 4 | 5 | 6;
+export type CardSectionHeading = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export interface CardProps {
   /** Figma: Choose icon. Any icon; it's decorative and takes its colour from the slot via currentColor */
@@ -13,17 +13,18 @@ export interface CardProps {
   /** Where the card links to. The whole card is clickable */
   href: string;
   /**
-   * Heading level for the title. Not in Figma: it depends on where the card sits on the page.
-   * Defaults to 3, for cards listed under a section's h2
+   * HTML heading element for the title, for screen readers. It doesn't change the text style.
+   * Not in Figma: it depends on where the card sits on the page. Defaults to h3, for cards
+   * listed under a section's h2
    */
-  headingLevel?: CardHeadingLevel;
+  htmlSectionHeading?: CardSectionHeading;
 }
 
 // The link wraps the title only, so its accessible name is the title rather than all of the
 // card's text. A pseudo-element on the link stretches over the card to make the whole card
 // clickable. See the Card entry in docs/learnings.md.
-export function Card({ chooseIcon, titleText, descriptionText, href, headingLevel = 3 }: CardProps) {
-  const Heading = `h${headingLevel}` as const;
+export function Card({ chooseIcon, titleText, descriptionText, href, htmlSectionHeading = 'h3' }: CardProps) {
+  const Heading = htmlSectionHeading;
 
   return (
     <div className={styles.card}>
