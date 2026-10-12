@@ -110,6 +110,12 @@ Examples:
 - Use semantic HTML and meet WCAG 2.2 AA
 - **Focus states:** Use browser default focus styles for now. Never remove or override them (no `outline: none`), and make sure every interactive element is focusable with the keyboard. Custom focus styles may be added later with dedicated tokens
 - Storybook documentation pages may hard-code layout-only values (swatch sizes, column widths, monospace font) where no token exists. Component CSS may not
+- A Figma variant property named Interaction state maps to CSS pseudo-classes, never a prop: Default is the base style, Hover is :hover, Pressed is :active. Wrap hover styles in @media (hover: hover) so they don't stick on touch screens. Stories show each state using a pseudo-state addon. Any other variant property (such as Selected or Disabled) is a prop
+- Clickable components are built as real links or buttons, never a clickable div
+- Icon slots accept any icon. The slot size comes from the icon component's size in Figma (e.g. 20px) and may be written as a fixed value until size tokens exist. Icons take their colour from the slot via currentColor, set using the semantic icon colour token
+- Component width follows Figma's sizing: Hug contents fits the content, Fill container fills the available space. A fixed width on a component's outer frame is ambiguous, so check the list below and ask if the component isn't listed
+- Card: fills the width of its container. 242px in Figma is a preview size
+- Stories for components that fill their container show them at their Figma width, so they can be compared with Figma directly, plus at least one other width to show how they adapt
 
 ## Definition of done
 
