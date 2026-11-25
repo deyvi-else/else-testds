@@ -101,7 +101,7 @@ Examples:
 ## Component rules
 
 - **Colour:** Components use semantic or component colour tokens only. Never use primitive colour or opacity tokens to build a colour in a component
-- **Spacing, border radius, border width and font family:** Components may use primitive tokens directly, as no semantic tokens exist for these yet. If semantic or component tokens are added later, use those instead
+- **Spacing, sizes, border radius, border width and font family:** Components may use primitive tokens directly, as no semantic tokens exist for these yet. If semantic or component tokens are added later, use those instead
 - **Opacity:** Primitive opacity tokens may be used for element opacity (the `opacity` property) only
 - Never hard-code values (colours, sizes, spacing, radii, opacity) in component CSS
 - If a design uses a value that doesn't match any token, flag it instead of hard-coding or rounding to the nearest token
@@ -115,6 +115,7 @@ Examples:
 - Clickable components are built as real links or buttons, never a clickable div
 - Icon slots accept any icon. The slot size comes from the icon component's size in Figma (e.g. 20px) and may be written as a fixed value until size tokens exist. Icons take their colour from the slot via currentColor, set using the semantic icon colour token
 - Component width follows Figma's sizing: Hug contents fits the content, Fill container fills the available space. A fixed width on a component's outer frame is ambiguous, so check the component-specific rules below and ask if the component isn't listed
+- Export every component and its prop types from src/index.ts, so the import shown in Figma's Code Connect snippets (import { X } from "else-testds") works
 
 ## Component-specific rules
 
