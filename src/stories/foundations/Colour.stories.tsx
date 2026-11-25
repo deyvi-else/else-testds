@@ -13,7 +13,10 @@ import {
 } from './docs';
 import styles from './docs.module.css';
 import {
+  componentColorGroups,
+  componentModes,
   cssVar,
+  defaultComponentMode,
   defaultMode,
   figmaName,
   figmaValue,
@@ -39,12 +42,12 @@ type Story = StoryObj<typeof meta>;
 
 const UsedBy = ({ token }: { token: RawToken }) => {
   const uses = usedBy(token.path);
-  if (uses.length === 0) return <span className={styles.subtle}>Not used by a semantic token</span>;
+  if (uses.length === 0) return <span className={styles.subtle}>Not used by a semantic or component token</span>;
   return (
     <ul className={styles.list}>
       {uses.map(({ mode, tokens }) => (
-        <li key={mode.name} className={styles.stack}>
-          <span className={styles.label}>Used in {mode.name} mode by</span>
+        <li key={mode} className={styles.stack}>
+          <span className={styles.label}>Used in {mode} mode by</span>
           {tokens.map((t) => (
             <span key={t.path.join('.')} className={styles.subtle}>
               <Name>{figmaName(t.path)}</Name>
@@ -62,8 +65,8 @@ export const Primitives: Story = {
       title="Colour primitives"
       intro={
         <p>
-          Primitives have one mode. Components never use them directly; they use the semantic colours, which
-          reference these.
+          Primitives have one mode. Components never use them directly; they use the semantic or component
+          colours, which reference these.
         </p>
       }
     >
@@ -142,10 +145,12 @@ const ModeCell = ({ mode, path }: { mode: Mode; path: string[] }) => {
   );
 };
 
-const modeColumns: Column<RawToken>[] = [
+const modeColumnsFor = (list: Mode[]): Column<RawToken>[] => [
   { header: 'Token', cell: (token) => <TokenName path={token.path} /> },
-  ...modes.map((mode) => ({ header: mode.name, cell: (token: RawToken) => <ModeCell mode={mode} path={token.path} /> })),
+  ...list.map((mode) => ({ header: mode.name, cell: (token: RawToken) => <ModeCell mode={mode} path={token.path} /> })),
 ];
+
+const modeColumns = modeColumnsFor(modes);
 
 export const SemanticLightAndDark: Story = {
   name: 'Semantic: light and dark',
@@ -170,6 +175,84 @@ export const SemanticLightAndDark: Story = {
         <section key={property} className={styles.section}>
           <h2 className={styles.heading}>{property}</h2>
           <Table caption={`${property} colours, all modes`} columns={modeColumns} rows={tokens} />
+        </section>
+      ))}
+    </Page>
+  ),
+};
+
+// --- Component ---------------------------------------------------------------------
+
+// Component colours have the same light and dark modes as the semantics, and
+// the same table layout. They're grouped by component family, then property.
+
+export const Component: Story = {
+  render: (_, { globals }) => {
+    const mode = modeNamed(globals.theme as string, componentModes);
+    return (
+      <Page
+        title="Component colours"
+        intro={
+          <>
+            <p>
+              Colours for one component, from the Components collection in Figma. A component uses its own colours
+              where they exist, and semantic colours otherwise.
+            </p>
+            <p>
+              Showing <strong>{mode.name}</strong> mode. Use the Theme toggle in the toolbar to switch modes, or see{' '}
+              <em>Component: light and dark</em> for both side by side.
+            </p>
+            <SwatchNote />
+          </>
+        }
+      >
+        {componentColorGroups(mode).map(({ family, groups }) => (
+          <section key={family} className={styles.section}>
+            <h2 className={styles.heading}>{family}</h2>
+            {groups.map(({ property, tokens }) => (
+              <Table
+                key={property}
+                caption={`${family} ${property} colours, ${mode.name} mode`}
+                columns={semanticColumns}
+                rows={tokens}
+              />
+            ))}
+          </section>
+        ))}
+      </Page>
+    );
+  },
+};
+
+const componentModeColumns = modeColumnsFor(componentModes);
+
+export const ComponentLightAndDark: Story = {
+  name: 'Component: light and dark',
+  render: () => (
+    <Page
+      title="Component colours: light and dark"
+      intro={
+        <>
+          <p>
+            Every mode side by side. Each mode column sets <code className={styles.code}>data-theme</code> the same
+            way the app does, so its swatches and CSS values are read from tokens.css in that mode. The page around
+            them follows the toolbar theme.
+          </p>
+          <SwatchNote />
+        </>
+      }
+    >
+      {componentColorGroups(defaultComponentMode).map(({ family, groups }) => (
+        <section key={family} className={styles.section}>
+          <h2 className={styles.heading}>{family}</h2>
+          {groups.map(({ property, tokens }) => (
+            <Table
+              key={property}
+              caption={`${family} ${property} colours, all modes`}
+              columns={componentModeColumns}
+              rows={tokens}
+            />
+          ))}
         </section>
       ))}
     </Page>

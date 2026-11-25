@@ -94,7 +94,7 @@ const primitiveAt = (path: string[]) => {
 /** Primitive tokens of one category (`color`, `opacity`, `space`, `border`, `font`) */
 export const primitives = (category: string) => primitiveTokens.filter((t) => t.path[2] === category);
 
-// --- Semantics -----------------------------------------------------------------
+// --- Semantics and components -------------------------------------------------
 
 export interface Mode {
   name: string;
@@ -102,19 +102,29 @@ export interface Mode {
   tokens: RawToken[];
 }
 
+/** The modes of one token level (`semantic` or `component`), default mode first */
+const levelModes = (tokenLevel: string): Mode[] =>
+  tokenFiles
+    .filter((file) => file.tokens.some((t) => level(t) === tokenLevel))
+    .map((file) => ({
+      name: file.meta.mode ?? 'default',
+      isDefault: file.meta.isDefaultMode ?? false,
+      tokens: file.tokens.filter((t) => level(t) === tokenLevel),
+    }))
+    .sort((a, b) => Number(b.isDefault) - Number(a.isDefault));
+
 /** Semantic modes, default mode first */
-export const modes: Mode[] = tokenFiles
-  .filter((file) => file.tokens.some((t) => level(t) === 'semantic'))
-  .map((file) => ({
-    name: file.meta.mode ?? 'default',
-    isDefault: file.meta.isDefaultMode ?? false,
-    tokens: file.tokens.filter((t) => level(t) === 'semantic'),
-  }))
-  .sort((a, b) => Number(b.isDefault) - Number(a.isDefault));
+export const modes = levelModes('semantic');
 
 export const defaultMode = modes[0];
 
-export const modeNamed = (name: string) => modes.find((mode) => mode.name === name) ?? defaultMode;
+/** Component modes, default mode first. Same mode names as the semantics */
+export const componentModes = levelModes('component');
+
+export const defaultComponentMode = componentModes[0];
+
+/** The mode with this name, from the given list (semantic modes by default) */
+export const modeNamed = (name: string, list: Mode[] = modes) => list.find((mode) => mode.name === name) ?? list[0];
 
 /**
  * Attributes that switch an element to a mode, matching tokens.css. Every
@@ -123,14 +133,15 @@ export const modeNamed = (name: string) => modes.find((mode) => mode.name === na
  */
 export const modeAttributes = (mode: Mode) => ({ 'data-theme': mode.name });
 
-/** Semantic tokens that reference a primitive, in each mode */
-export const usedBy = (path: string[]) =>
-  modes
-    .map((mode) => ({
-      mode,
-      tokens: mode.tokens.filter((t) => references(t).some((ref) => ref.path.join('.') === path.join('.'))),
-    }))
-    .filter(({ tokens }) => tokens.length > 0);
+/** Semantic and component tokens that reference a primitive, grouped by mode name */
+export const usedBy = (path: string[]) => {
+  const byMode = new Map<string, RawToken[]>();
+  for (const mode of [...modes, ...componentModes]) {
+    const tokens = mode.tokens.filter((t) => references(t).some((ref) => ref.path.join('.') === path.join('.')));
+    if (tokens.length) byMode.set(mode.name, [...(byMode.get(mode.name) ?? []), ...tokens]);
+  }
+  return [...byMode.entries()].map(([mode, tokens]) => ({ mode, tokens }));
+};
 
 /** Semantic colours grouped by property (`background`, `text`, ...) */
 export const semanticColorGroups = (mode: Mode) => {
@@ -140,6 +151,24 @@ export const semanticColorGroups = (mode: Mode) => {
     groups.set(property, [...(groups.get(property) ?? []), token]);
   }
   return [...groups.entries()].map(([property, tokens]) => ({ property, tokens }));
+};
+
+/**
+ * Component colours grouped by component family, then property
+ * (testds/component/<family>/color/<property>/...)
+ */
+export const componentColorGroups = (mode: Mode) => {
+  const families = new Map<string, Map<string, RawToken[]>>();
+  for (const token of mode.tokens.filter((t) => t.path[3] === 'color')) {
+    const [family, property] = [token.path[2], token.path[4]];
+    const groups = families.get(family) ?? new Map<string, RawToken[]>();
+    groups.set(property, [...(groups.get(property) ?? []), token]);
+    families.set(family, groups);
+  }
+  return [...families.entries()].map(([family, groups]) => ({
+    family,
+    groups: [...groups.entries()].map(([property, tokens]) => ({ property, tokens })),
+  }));
 };
 
 /**

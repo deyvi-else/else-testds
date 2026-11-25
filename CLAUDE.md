@@ -44,14 +44,14 @@ To change a token, change it in Figma and re-export. Never edit generated files 
 
 - **Prefix:** `--testds-` (the design system segment of the naming structure)
 - **Naming:** Token names follow the segment order in the naming table below. Unused segments are omitted, not left blank. Segments are lowercase kebab-case, joined with hyphens
-- **Collections:** Figma has two variable collections, `Primitives` and `Semantics`. Collection names are not part of token names; the token level is already in each variable's path (`testds/primitive/...`, `testds/semantic/...`)
+- **Collections:** Figma has three variable collections, `Primitives`, `Semantics` and `Components`. Collection names are not part of token names; the token level is already in each variable's path (`testds/primitive/...`, `testds/semantic/...`, `testds/component/...`)
 - **Aliases:** Preserve references. A semantic token that points to a primitive outputs `var(--testds-...)`, never the resolved value
 - **Colour with opacity:** Some semantic colours reference both a primitive colour and a primitive opacity. Output these with `color-mix()` so both references are preserved, e.g. `color-mix(in srgb, var(--testds-primitive-color-neutral-9) calc(var(--testds-primitive-opacity-2) * 100%), transparent)`
 - **Units:**
   - Spacing in rem (16px base)
   - Border widths and radii in px
   - Opacity: Figma stores percentages (`5`). Output as decimals (`0.05`)
-- **Modes:** The `Semantics` collection has two modes, light and dark. Light is the default and outputs on both :root and [data-theme="light"], so light sections can sit inside dark ones
+- **Modes:** The `Semantics` and `Components` collections each have two modes, light and dark. Light is the default and outputs on both :root and [data-theme="light"], so light sections can sit inside dark ones
 - **Token names and groups:** A token name must never also be the start of another token's name (e.g. `secondary` and `secondary/hover`). DTCG JSON can't represent a value that is also a group. Use an explicit name for the default, such as `secondary/default`
 - **Typography:** Defined by Figma text styles. Font family comes from a Figma string variable bound to each text style. As in Figma, a text style has no font family of its own: it uses the font family primitive it's bound to, e.g. var(--testds-primitive-font-family-sans). Each text style outputs --testds-typography-<text style name>-<property> for font-size, font-weight, line-height and letter-spacing only. If a text style's font family isn't bound to a variable, flag it
   - Font size and line height in rem
@@ -64,7 +64,7 @@ To change a token, change it in Figma and re-export. Never edit generated files 
 
 ### Naming table
 
-Source: https://www.figma.com/design/kDoLf0s6Vdeg8dS8cgi1ro/Test-design-system?node-id=2-3075
+Source: https://www.figma.com/design/kDoLf0s6Vdeg8dS8cgi1ro/Test-design-system?node-id=93-221
 
 If this table and the Figma frame disagree, the Figma frame wins. Flag the difference rather than choosing silently
 
@@ -75,8 +75,8 @@ Segment order:
 | Segment | Purpose | Examples |
 | --- | --- | --- |
 | Design system | Namespace | `testds` |
-| Token level | Tier | `primitive`, `semantic` |
-| Component family | Component the token belongs to | Not yet used |
+| Token level | Tier | `primitive`, `semantic`, `component` |
+| Component family | Component the token belongs to | `button` |
 | Component part | Part of that component | Not yet used |
 | Category | Type of value | `color`, `opacity`, `space`, `border` |
 | Property | What it applies to | `background`, `border`, `text`, `icon`, `width`, `radius` |
@@ -97,6 +97,7 @@ Examples:
 | Semantic | category, property, variant, state | `--testds-semantic-color-background-secondary-hover` |
 | Semantic | category, property, variant | `--testds-semantic-color-text-subtle` |
 | Semantic | category, property, variant | `--testds-semantic-color-icon-strong` |
+| Component | component family, category, property, variant, state | `--testds-component-button-color-background-primary-default` |
 
 ## Component rules
 

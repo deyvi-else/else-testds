@@ -85,9 +85,9 @@
 
 /* Figma: Description, body/100 */
 .description {
-  font-size: var(--testds-typography-body-100-font-size);
-  font-weight: var(--testds-typography-body-100-font-weight);
-  line-height: var(--testds-typography-body-100-line-height);
-  letter-spacing: var(--testds-typography-body-100-letter-spacing);
+  font-size: var(--testds-typography-body-100-regular-font-size);
+  font-weight: var(--testds-typography-body-100-regular-font-weight);
+  line-height: var(--testds-typography-body-100-regular-line-height);
+  letter-spacing: var(--testds-typography-body-100-regular-letter-spacing);
   color: var(--testds-semantic-color-text-subtle);
 }

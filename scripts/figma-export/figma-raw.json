@@ -64,15 +64,36 @@
         }
       ],
       "variableIds": [
-        "VariableID:2:4530",
         "VariableID:2:4573",
+        "VariableID:2:4531",
+        "VariableID:2:4530",
         "VariableID:4:54",
         "VariableID:5:223",
-        "VariableID:2:4531",
         "VariableID:2:4575",
         "VariableID:2:4576",
         "VariableID:2:4577",
         "VariableID:2:4597"
+      ]
+    },
+    {
+      "id": "VariableCollectionId:93:490",
+      "key": "17057b58ef4533e2f483672abb879df71d7e8064",
+      "name": "Components",
+      "defaultModeId": "93:0",
+      "modes": [
+        {
+          "modeId": "93:0",
+          "name": "light"
+        },
+        {
+          "modeId": "93:1",
+          "name": "dark"
+        }
+      ],
+      "variableIds": [
+        "VariableID:93:491",
+        "VariableID:93:501",
+        "VariableID:93:494"
       ]
     }
   ],
@@ -941,6 +962,75 @@
       ],
       "codeSyntax": {},
       "hiddenFromPublishing": false
+    },
+    {
+      "id": "VariableID:93:491",
+      "key": "71d9bc5afee85a9aa2e1f4d9774cf3f1f491951e",
+      "name": "testds/component/button/color/background/primary/default",
+      "description": "",
+      "resolvedType": "COLOR",
+      "variableCollectionId": "VariableCollectionId:93:490",
+      "valuesByMode": {
+        "93:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:2:4527"
+        },
+        "93:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:11:208"
+        }
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ],
+      "codeSyntax": {},
+      "hiddenFromPublishing": false
+    },
+    {
+      "id": "VariableID:93:494",
+      "key": "07b45aed6052b0cc6cc9aa7860097dbb8f580aaa",
+      "name": "testds/component/button/color/text/primary",
+      "description": "",
+      "resolvedType": "COLOR",
+      "variableCollectionId": "VariableCollectionId:93:490",
+      "valuesByMode": {
+        "93:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:2:4524"
+        },
+        "93:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:11:211"
+        }
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ],
+      "codeSyntax": {},
+      "hiddenFromPublishing": false
+    },
+    {
+      "id": "VariableID:93:501",
+      "key": "4aa1e22e5e8bb36a7d27ac9c0006e20b2ff20785",
+      "name": "testds/component/button/color/background/primary/hover",
+      "description": "",
+      "resolvedType": "COLOR",
+      "variableCollectionId": "VariableCollectionId:93:490",
+      "valuesByMode": {
+        "93:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:2:4528"
+        },
+        "93:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:2:4524"
+        }
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ],
+      "codeSyntax": {},
+      "hiddenFromPublishing": false
     }
   ],
   "textStyles": [
@@ -1081,9 +1171,9 @@
       }
     },
     {
-      "id": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
-      "key": "f062a5f74b2ca12ae69c024369079e9220e2b031",
-      "name": "body/100",
+      "id": "S:b7889408eb17b81b2c18f63c42ec815b7ec6177f,",
+      "key": "b7889408eb17b81b2c18f63c42ec815b7ec6177f",
+      "name": "body/100/regular",
       "description": "",
       "fontName": {
         "family": "Inter",
@@ -1091,6 +1181,40 @@
         "variationSettings": {
           "wght": 400,
           "slnt": 0
+        }
+      },
+      "fontSize": 13,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 21
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "paragraphSpacing": 0,
+      "paragraphIndent": 0,
+      "textCase": "ORIGINAL",
+      "textDecoration": "NONE",
+      "leadingTrim": "NONE",
+      "boundVariables": {
+        "fontFamily": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:24:522"
+        }
+      }
+    },
+    {
+      "id": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
+      "key": "f062a5f74b2ca12ae69c024369079e9220e2b031",
+      "name": "body/100/bold",
+      "description": "",
+      "fontName": {
+        "family": "Inter",
+        "style": "Medium",
+        "variationSettings": {
+          "slnt": 0,
+          "wght": 510
         }
       },
       "fontSize": 13,
