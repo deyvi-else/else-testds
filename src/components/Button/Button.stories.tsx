@@ -26,13 +26,12 @@ const meta = {
     label: 'Label',
   },
   // Labels match the Figma property names. type and className are HTML attributes with no Figma
-  // property, so they're hidden from the controls. onClick is logged in the Actions panel
+  // property, so they're hidden from the controls
   argTypes: {
     label: { name: 'Label' },
     variant: { name: 'Variant', control: 'inline-radio', options: ['primary', 'secondary'] },
     type: { table: { disable: true } },
     className: { table: { disable: true } },
-    onClick: { action: 'clicked' },
   },
 } satisfies Meta<typeof Button>;
 
