@@ -13,17 +13,20 @@ const REM_BASE = 16;
 // own instance, and the blocks are joined into one file:
 //
 //   :root                          Primitives, typography
-//   :root, [data-theme="light"]    Semantics (light)
-//   [data-theme="dark"]            Semantics (dark)
+//   :root, [data-theme="light"]    Semantics, then Components (light)
+//   [data-theme="dark"]            Semantics, then Components (dark)
 //
 // Light is also on [data-theme="light"] so a light section can sit inside a
-// dark one. The semantics instances also load the primitives so their
-// references resolve, but only output their own mode.
+// dark one. The light and dark instances also load the primitives so their
+// references resolve, but only output their own mode. Components can
+// reference primitives or semantics, so both are loaded for them.
 
 const FILES = {
   primitives: 'tokens/primitives.default.json',
   light: 'tokens/semantics.light.json',
   dark: 'tokens/semantics.dark.json',
+  componentsLight: 'tokens/components.light.json',
+  componentsDark: 'tokens/components.dark.json',
   typography: 'tokens/typography.json',
 };
 
@@ -35,13 +38,13 @@ const BLOCKS = [
   },
   {
     selector: ':root, [data-theme="light"]',
-    source: [FILES.primitives, FILES.light],
-    output: [FILES.light],
+    source: [FILES.primitives, FILES.light, FILES.componentsLight],
+    output: [FILES.light, FILES.componentsLight],
   },
   {
     selector: '[data-theme="dark"]',
-    source: [FILES.primitives, FILES.dark],
-    output: [FILES.dark],
+    source: [FILES.primitives, FILES.dark, FILES.componentsDark],
+    output: [FILES.dark, FILES.componentsDark],
   },
 ];
 

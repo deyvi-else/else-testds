@@ -111,36 +111,72 @@
   },
   "body": {
     "100": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{testds.primitive.font.family.sans}",
-        "fontSize": {
-          "value": 13,
-          "unit": "px"
+      "regular": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{testds.primitive.font.family.sans}",
+          "fontSize": {
+            "value": 13,
+            "unit": "px"
+          },
+          "fontWeight": 400,
+          "lineHeight": {
+            "value": 21,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "%"
+          }
         },
-        "fontWeight": 400,
-        "lineHeight": {
-          "value": 21,
-          "unit": "px"
-        },
-        "letterSpacing": {
-          "value": 0,
-          "unit": "%"
+        "$extensions": {
+          "com.figma": {
+            "styleId": "S:b7889408eb17b81b2c18f63c42ec815b7ec6177f,",
+            "styleKey": "b7889408eb17b81b2c18f63c42ec815b7ec6177f",
+            "fontName": {
+              "family": "Inter",
+              "style": "Regular",
+              "variationSettings": {
+                "wght": 400,
+                "slnt": 0
+              }
+            },
+            "order": 4
+          }
         }
       },
-      "$extensions": {
-        "com.figma": {
-          "styleId": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
-          "styleKey": "f062a5f74b2ca12ae69c024369079e9220e2b031",
-          "fontName": {
-            "family": "Inter",
-            "style": "Regular",
-            "variationSettings": {
-              "wght": 400,
-              "slnt": 0
-            }
+      "bold": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{testds.primitive.font.family.sans}",
+          "fontSize": {
+            "value": 13,
+            "unit": "px"
           },
-          "order": 4
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 21,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "%"
+          }
+        },
+        "$extensions": {
+          "com.figma": {
+            "styleId": "S:f062a5f74b2ca12ae69c024369079e9220e2b031,",
+            "styleKey": "f062a5f74b2ca12ae69c024369079e9220e2b031",
+            "fontName": {
+              "family": "Inter",
+              "style": "Medium",
+              "variationSettings": {
+                "wght": 500,
+                "slnt": 0
+              }
+            },
+            "order": 5
+          }
         }
       }
     },

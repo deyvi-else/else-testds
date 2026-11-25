@@ -60,13 +60,15 @@ tokens/
   primitives.default.json   Primitives collection, default mode
   semantics.light.json      Semantics collection, light mode (Figma's default mode)
   semantics.dark.json       Semantics collection, dark mode
+  components.light.json     Components collection, light mode (Figma's default mode)
+  components.dark.json      Components collection, dark mode
   typography.json           Text styles
 ```
 
 There is **one file per collection per mode**, named `<collection>.<mode>.json`.
 
 - Each mode file contains the full set of tokens for that collection, with the same token paths. The mode is in the file name, so it's always clear which values belong to which mode
-- Style Dictionary builds a mode by loading `primitives.default.json` with one semantics file at a time. This is the standard way to handle modes, because a token path can only have one value per build
+- Style Dictionary builds a mode by loading `primitives.default.json` with one mode's semantics and components files at a time. This is the standard way to handle modes, because a token path can only have one value per build
 - Adding a mode or collection in Figma adds a file. No restructuring is needed
 - Text styles have no modes, so they go in one file. There is no effects file because there are no effect styles
 

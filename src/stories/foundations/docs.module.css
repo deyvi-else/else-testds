@@ -65,10 +65,10 @@
 .caption,
 .label {
   color: var(--testds-semantic-color-text-subtle);
-  font-size: var(--testds-typography-body-100-font-size);
-  font-weight: var(--testds-typography-body-100-font-weight);
-  line-height: var(--testds-typography-body-100-line-height);
-  letter-spacing: var(--testds-typography-body-100-letter-spacing);
+  font-size: var(--testds-typography-body-100-regular-font-size);
+  font-weight: var(--testds-typography-body-100-regular-font-weight);
+  line-height: var(--testds-typography-body-100-regular-line-height);
+  letter-spacing: var(--testds-typography-body-100-regular-letter-spacing);
 }
 
 .label {
@@ -78,8 +78,8 @@
 
 .code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: var(--testds-typography-body-100-font-size);
-  line-height: var(--testds-typography-body-100-line-height);
+  font-size: var(--testds-typography-body-100-regular-font-size);
+  line-height: var(--testds-typography-body-100-regular-line-height);
   color: var(--testds-semantic-color-text-strong);
   overflow-wrap: anywhere;
 }
@@ -147,8 +147,8 @@
 
 .values dt {
   color: var(--testds-semantic-color-text-subtle);
-  font-size: var(--testds-typography-body-100-font-size);
-  line-height: var(--testds-typography-body-100-line-height);
+  font-size: var(--testds-typography-body-100-regular-font-size);
+  line-height: var(--testds-typography-body-100-regular-line-height);
 }
 
 .values dd {

@@ -249,6 +249,17 @@ const checkFontFamily = (actual, family) => {
   }
 };
 
+// Which Figma source each custom property comes from, for the report. Anything
+// that isn't a variable is a text style property.
+const sourceOf = new Map(
+  raw.variables.map((v) => [cssName(v.name), collectionsById.get(v.variableCollectionId).name]),
+);
+const source = (name) => sourceOf.get(name) ?? 'Text styles';
+const sources = [...raw.collections.map((c) => c.name), 'Text styles'];
+const checkedBySource = Object.fromEntries(
+  CASES.map(({ name }) => [name, Object.fromEntries(sources.map((s) => [s, 0]))]),
+);
+
 for (const { name: caseName, figmaMode: mode, scope } of CASES) {
   const compare = (name, check) => {
     expectedNames.add(name);
@@ -256,7 +267,10 @@ for (const { name: caseName, figmaMode: mode, scope } of CASES) {
     try {
       const message = check(evaluate(`var(${name})`, scope), scope.get(name));
       if (message) fail(caseName, name, message);
-      else checked[caseName]++;
+      else {
+        checked[caseName]++;
+        checkedBySource[caseName][source(name)]++;
+      }
     } catch (error) {
       fail(caseName, name, error.message);
     }
@@ -408,6 +422,8 @@ for (const [mode, block] of [['light', lightBlock], ['dark', darkBlock]]) {
 
 for (const { name } of CASES) {
   console.log(`${name}: ${checked[name]} of ${expectedNames.size} values match Figma`);
+  const expectedBySource = (s) => [...expectedNames].filter((n) => source(n) === s).length;
+  for (const s of sources) console.log(`  ${s}: ${checkedBySource[name][s]} of ${expectedBySource(s)}`);
 }
 
 if (failures.length) {

@@ -26,12 +26,12 @@ const columns: Column<RawToken>[] = [
     header: 'Used by',
     cell: (token) => {
       const uses = usedBy(token.path);
-      if (uses.length === 0) return <span className={styles.subtle}>Not used by a semantic token</span>;
+      if (uses.length === 0) return <span className={styles.subtle}>Not used by a semantic or component token</span>;
       return (
         <ul className={styles.list}>
           {uses.map(({ mode, tokens }) => (
-            <li key={mode.name} className={styles.stack}>
-              <span className={styles.label}>{mode.name}</span>
+            <li key={mode} className={styles.stack}>
+              <span className={styles.label}>{mode}</span>
               {tokens.map((t) => (
                 <span key={t.path.join('.')} className={styles.subtle}>
                   <Name>{figmaName(t.path)}</Name>

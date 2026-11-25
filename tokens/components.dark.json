@@ -1,0 +1,65 @@
+{
+  "$extensions": {
+    "com.figma": {
+      "fileKey": "kDoLf0s6Vdeg8dS8cgi1ro",
+      "collection": "Components",
+      "collectionId": "VariableCollectionId:93:490",
+      "mode": "dark",
+      "modeId": "93:1",
+      "isDefaultMode": false
+    }
+  },
+  "testds": {
+    "component": {
+      "button": {
+        "color": {
+          "background": {
+            "primary": {
+              "default": {
+                "$type": "color",
+                "$value": "{testds.primitive.color.neutral.2}",
+                "$extensions": {
+                  "com.figma": {
+                    "variableId": "VariableID:93:491",
+                    "variableKey": "71d9bc5afee85a9aa2e1f4d9774cf3f1f491951e",
+                    "scopes": [
+                      "ALL_SCOPES"
+                    ]
+                  }
+                }
+              },
+              "hover": {
+                "$type": "color",
+                "$value": "{testds.primitive.color.neutral.1}",
+                "$extensions": {
+                  "com.figma": {
+                    "variableId": "VariableID:93:501",
+                    "variableKey": "4aa1e22e5e8bb36a7d27ac9c0006e20b2ff20785",
+                    "scopes": [
+                      "ALL_SCOPES"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "text": {
+            "primary": {
+              "$type": "color",
+              "$value": "{testds.primitive.color.neutral.8}",
+              "$extensions": {
+                "com.figma": {
+                  "variableId": "VariableID:93:494",
+                  "variableKey": "07b45aed6052b0cc6cc9aa7860097dbb8f580aaa",
+                  "scopes": [
+                    "ALL_SCOPES"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,11 +20,11 @@ npm run tokens:check
 
 ```
 :root                          Primitives, typography
-:root, [data-theme="light"]    Semantics (light)
-[data-theme="dark"]            Semantics (dark)
+:root, [data-theme="light"]    Semantics, then Components (light)
+[data-theme="dark"]            Semantics, then Components (dark)
 ```
 
-The light and dark files share token paths, so one Style Dictionary instance can't load both. [`style-dictionary.config.mjs`](../style-dictionary.config.mjs) builds each block with its own instance and joins them into one file. The semantics instances also load the primitives so their references resolve, but only output their own mode.
+The light and dark files share token paths, so one Style Dictionary instance can't load both. [`style-dictionary.config.mjs`](../style-dictionary.config.mjs) builds each block with its own instance and joins them into one file. The light and dark instances also load the primitives so references resolve, but only output their own mode. Each one outputs the Semantics and Components files for its mode. Components can reference primitives or semantics, so both are loaded with them.
 
 Light is the default on `:root`, and also on `[data-theme="light"]` so a light section can sit inside a dark one.
 
@@ -65,12 +65,14 @@ For each case (light, dark, and a light section inside a dark page) it:
 3. Works out Figma's value for the same token in the same mode, following aliases and applying opacity to colours
 4. Compares them. Converted units count as matching when they're equivalent (`0.5rem` = `8px`, `0.08` = `8%`, `0em` = `0%`). Colours may differ by half an 8-bit step, because hex rounds each channel
 
+The report counts matching values per source (Primitives, Semantics, Components and text styles) in each case, so a collection that's missing from the check shows up as a gap.
+
 It also fails if:
 
 - A Figma alias was output as a resolved value instead of `var()` to the right token
 - A token uses the wrong unit, even if the value is equivalent (spacing in px, for example)
 - A token is missing, or the CSS has a token Figma doesn't
-- The light or dark block is missing a semantic token, contains a token from a collection without that mode, or repeats a token that's also in the `:root`-only block
+- The light or dark block is missing a semantic or component token, contains a token from a collection without that mode, or repeats a token that's also in the `:root`-only block
 - A selector appears more than once
 - A text style's font family isn't bound to a variable in Figma, the bound variable doesn't render the style's family with the fallback stack, or the CSS gives a text style its own `font-family` property
 
