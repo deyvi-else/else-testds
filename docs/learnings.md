@@ -231,3 +231,45 @@ Lesson: renaming a text style in Figma changes its CSS name, and editing a style
 **Semantic variables were reordered in Figma's panel.** Values didn't change, but the order of `tokens/semantics.*.json`, `tokens.css` and the semantic tables follows Figma's.
 
 **Checked against Figma.** The committed snapshot was compared with a fresh read just before committing, and it matched exactly. `tokens:check` passes, with 69 of 69 values in light, dark and light inside dark. In Storybook, the Component stories show the expected Figma and CSS values in both themes. The Card description renders at 13px, weight 400, with a 21px line height, which is `body/100/regular`. Lint, typecheck and the Storybook build pass. The build only gives its usual warning about chunk size.
+
+## 2026-11-25: Button component
+
+Source: the Button component set (Figma node 93:219), read-only with the Plugin API, and its variables. The code is in `src/components/Button/`, and side-by-side comparisons are [button-light.png](comparisons/button-light.png) and [button-dark.png](comparisons/button-dark.png).
+
+**Values read from Figma, and the token each maps to.**
+
+| Figma | Token / CSS |
+| --- | --- |
+| Properties: Label (text), Variant (Primary, Secondary), Interaction state (Default, Hover) | `label`, `variant` props. Interaction state is `:hover` |
+| Horizontal auto layout, centred, Hug width, fixed height | `inline-flex`, centred, `width: max-content` |
+| Height 32, bound to `space/8` | `--testds-primitive-space-8` |
+| Padding left and right 12, bound to `space/4` | `--testds-primitive-space-4` |
+| Padding top and bottom 0, unbound | `0` |
+| Radius 16 on all corners, bound to `border/radius/1` | `--testds-primitive-border-radius-1` |
+| No strokes | `border: none` |
+| Primary fills and label | `--testds-component-button-color-background-primary-default`, `…-primary-hover`, `--testds-component-button-color-text-primary` |
+| Secondary Default: no fill | `background: none` |
+| Secondary Hover fill: black 5% (light), white 8% (dark) | `--testds-semantic-color-background-secondary-hover` |
+| Secondary label | `--testds-semantic-color-text-subtle` |
+| Label: `body/100/bold` (Inter, wght 510, 13/21, 0%), family bound to `font/family/sans`; auto width, no truncation | `--testds-typography-body-100-bold-*`, `--testds-primitive-font-family-sans`, `white-space: nowrap` |
+
+**Measured in the browser, all four variants in both themes:** 32px high, padding 0 12px, radius 16px, no border, Inter 13px / 510 / 21px / 0. Every background and label colour computed to its token's value. The button is 57.72px wide where Figma says 58: the label is 33.72px in Inter 4 and 34px in Figma's Inter 3 (see the Card entry), so at 4× the pill's right edge is one pixel further left. Fills, corners and the label's position otherwise match, and the difference images only show the letters' edges.
+
+**Secondary Hover, a colour with a separate opacity, renders as in Figma.** Light: black at 5% over white is `#f2f2f2` in Figma's render and in Storybook. Dark: white at 8% over `#08090a` works out at 27.8, 28.7, 29.6, and Chrome draws 27, 28, 29, under one step of 255 in each channel. `color-mix()` keeps both references, as the token pipeline already outputs it.
+
+**Dark mode can't be screenshotted from Figma read-only.** The REST image API and `get_screenshot` render the default (light) mode only. Rendering dark means setting a variable mode on a node, which is a change to the file, and this brief was read-only. So the dark sheet compares Storybook with the colours Figma's variables give in dark mode, not with a Figma render.
+
+**Secondary Hover fails contrast in light mode, like the Card.** It's the same pair as the Card's hover: `text/subtle` (`#6f6e77`) on `background/secondary/hover` over white (`#f2f2f2`), 4.49:1 where AA needs 4.5:1 for 13px text. axe was run on every story in light and dark, with and without Hover, and this is the only violation. Storybook's a11y panel only catches it while the story is on Secondary with Hover switched on in the toolbar, as with the Card. The fix belongs in Figma: changing either token fixes the Card and the Button together.
+
+**What needed new rules compared with the Card build:**
+
+- **A Figma "no fill" or "no stroke" on a native element means resetting browser defaults.** A `<button>` has its own background, border and margin. The Card was a `<div>`, so this didn't come up. The CSS uses `background: none`, `border: none`, `margin: 0` and a 0 block padding. These aren't design values, so they aren't hard-coded values in the sense of CLAUDE.md, but CLAUDE.md doesn't say so. Worth adding.
+- **`type="button"` by default.** CLAUDE.md says clickable things must be real buttons, but not which type. The brief set the default; it's worth a rule for every button-like component.
+- **States that aren't in Figma.** Figma has no Pressed, Disabled or Focus variant. CLAUDE.md maps Pressed to `:active` but only when it exists, so there's no `:active` style. `disabled` passes through as an attribute but looks the same as Default. Focus is the browser's ring, which shows on keyboard focus.
+- **Hug width on a fixed-height pill with a long label.** Figma's label auto-sizes and never truncates, so the button grows to fit and, in a narrow container, overflows it (308px in a 160px container, measured while a Long label story existed) rather than wrapping. `width: max-content` keeps the hug inside flex columns and grids that would otherwise stretch it. Figma doesn't say what should happen when there's no room. The pill also relies on the radius (16) being half the height (32): if either token changes alone, the ends stop being round.
+- **Height comes from a spacing token.** Figma binds the 32px height to `space/8`. CLAUDE.md lets components use primitives for sizes, so this is allowed, but a size token would say more than a spacing one.
+- **One Default story.** The first version had Primary, Secondary, Long label and an Overview laid out like the Figma component set, showing Default and Hover in light and dark sections (nested `data-theme`, using the pseudo-state addon's selector parameter). The designer cut these to one story, `Default`, as on the Card. It starts on Primary, Figma's default Variant. Readers switch Variant with its control, see Hover with the pseudo-states toolbar button and switch themes with the Theme toolbar. Separate Primary and Secondary stories only repeated what the Variant control does. `type` and `className` are hidden from the controls because they have no Figma property, and `onClick` isn't in the story at all: the component still accepts it, but the story had nothing to edit and only logged clicks. The comparisons and checks above were made with the earlier stories. CLAUDE.md has a story rule for the Card only, so a general rule (one Default story per component, with Figma's variants as controls) would stop the next brief asking for more.
+
+**How the comparison was made.** Figma: the REST image API at 4× for each variant (transparent backgrounds, put on white). Storybook: headless Chrome at device scale 4 for each story, with `globals=theme:dark;pseudo.hover:!true` in the URL for dark and Hover. A local HTML page drew both on a canvas, sampled the fills and pill edges, and drew a ×4 difference image. The scripts were one-off and aren't in the repo.
+
+**Not done.** Figma reported that the Button has no Code Connect mapping. That wasn't in this brief. A `Button.figma.ts` like the Card's would map Label and Variant, and leave out Interaction state.
