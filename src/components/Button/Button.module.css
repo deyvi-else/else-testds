@@ -1,0 +1,48 @@
+/*
+ * Figma: Button. Horizontal auto layout, centred, Hug width, fixed height.
+ * The pill shape is radius/1 (16px) on the 32px height (space/8).
+ * Top and bottom padding are 0 in Figma: the label's 21px line is centred in the 32px height.
+ */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: max-content;
+  height: var(--testds-primitive-space-8);
+  margin: 0;
+  padding: 0 var(--testds-primitive-space-4);
+  border: none;
+  border-radius: var(--testds-primitive-border-radius-1);
+  white-space: nowrap;
+
+  /* Figma: Label, body/100/bold. Font family is the primitive the text style is bound to */
+  font-family: var(--testds-primitive-font-family-sans);
+  font-size: var(--testds-typography-body-100-bold-font-size);
+  font-weight: var(--testds-typography-body-100-bold-font-weight);
+  line-height: var(--testds-typography-body-100-bold-line-height);
+  letter-spacing: var(--testds-typography-body-100-bold-letter-spacing);
+}
+
+/* Figma: Variant=Primary, Interaction state=Default */
+.primary {
+  background-color: var(--testds-component-button-color-background-primary-default);
+  color: var(--testds-component-button-color-text-primary);
+}
+
+/* Figma: Variant=Secondary, Interaction state=Default. No fill in Figma, so the browser's button background is removed */
+.secondary {
+  background: none;
+  color: var(--testds-semantic-color-text-subtle);
+}
+
+/* Figma: Interaction state=Hover */
+@media (hover: hover) {
+  .primary:hover {
+    background-color: var(--testds-component-button-color-background-primary-hover);
+  }
+
+  .secondary:hover {
+    background-color: var(--testds-semantic-color-background-secondary-hover);
+  }
+}
