@@ -273,3 +273,13 @@ Source: the Button component set (Figma node 93:219), read-only with the Plugin 
 **How the comparison was made.** Figma: the REST image API at 4× for each variant (transparent backgrounds, put on white). Storybook: headless Chrome at device scale 4 for each story, with `globals=theme:dark;pseudo.hover:!true` in the URL for dark and Hover. A local HTML page drew both on a canvas, sampled the fills and pill edges, and drew a ×4 difference image. The scripts were one-off and aren't in the repo.
 
 **Not done.** Figma reported that the Button has no Code Connect mapping. That wasn't in this brief. A `Button.figma.ts` like the Card's would map Label and Variant, and leave out Interaction state.
+
+## 2026-11-25: Code Connect for the Button
+
+Source: the Button component set (Figma node 93:219). The template is `src/components/Button/Button.figma.ts`, a parserless template like the Card's, published with the same command (`npx figma connect publish`, with `.env` loaded first).
+
+**Mapping.** Label maps to `label`, and Variant to `variant` (Primary to `primary`, Secondary to `secondary`). Interaction state isn't mapped, because it's `:hover`, not a prop. `variant` is always written out, although `primary` is the default, so a developer can see which variant the designer picked. `onClick`, `type` and the other button attributes have no Figma property, so they aren't in the snippet.
+
+**Checked in Figma.** All four variants (93:218, 93:499, 93:515, 93:517) are mapped to `src/components/Button/Button.tsx`. Primary Default and Hover give `<Button label="Label" variant="primary" />`, Secondary Default and Hover give `variant="secondary"`, each with `import { Button } from "else-testds"`. Publishing sends every template, so the Card and icon mappings were re-sent unchanged.
+
+**Easier than the Card.** The Button has no instance swap, so there was no question of what to show for an unconnected icon. `src/index.ts` already exported the Button, so the `else-testds` import worked without changes.
