@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "tokens": "node style-dictionary.config.mjs",
     "storybook": "storybook dev -p 6006",
@@ -10,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "tokens:export": "node scripts/figma-export/to-dtcg.mjs",
-    "tokens:check": "node scripts/figma-export/check-css.mjs"
+    "tokens:check": "node scripts/figma-export/check-css.mjs",
+    "icons": "node scripts/icons/build-icons.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",
@@ -18,6 +22,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@figma/code-connect": "^2.1.0",
     "@storybook/addon-a11y": "^10.6.9",
     "@storybook/addon-docs": "^10.6.9",
     "@storybook/react-vite": "^10.6.9",

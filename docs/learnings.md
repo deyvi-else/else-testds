@@ -174,3 +174,42 @@ Source: the Card component set (Figma node 5:192) and the `20px / Placeholder` i
 The icon is unchanged, as expected: smoothing only applies to text. The comparison images in [comparisons/](comparisons/) were redrawn with the new rendering. What's left in the description is the letters sitting fractions of a pixel apart, because Figma uses Inter 3 and the browser Inter 4.
 
 **Other differences from Linear, not followed.** Linear also tightens letter spacing slightly (about −1.1% on the title and −1.3% on the description), uses a 14px description where Figma has 13px, and turns on two of Inter's alternate letters (`cv01`, a different "1", and `ss03`, rounder quotes and commas). These are type decisions, so they'd start in Figma's text styles, not in code.
+
+## 2026-11-25: Code Connect for the Card
+
+Source: the Card component set (Figma node 5:192). The template is `src/components/Card/Card.figma.ts`, a parserless Code Connect template, published with `@figma/code-connect` 2.1.0 (the CLI reads `figma.config.json`). 2.1.1 was two days old at the time, so the month-old 2.1.0 was used instead.
+
+**Mapping.** Title text maps to `titleText`, Description text to `descriptionText`, and Choose icon to `chooseIcon`. Interaction state isn't mapped, because it's a CSS state (`:hover`), not a prop. `href` has no Figma property, so the snippet shows `href="#"` as a placeholder.
+
+**The icon prop is `chooseIcon`, not `icon`.** The brief said "icon", but the prop takes its name from the Figma property, so the template maps to the real prop rather than inventing one.
+
+**No icons are connected yet, so the snippet shows a placeholder.** `20px / Placeholder` and the other icons have no Code Connect mapping. When the swapped icon has one, its snippet goes in `chooseIcon`. When it doesn't, the snippet shows `chooseIcon={/* icon */}`, so the required prop stays visible without hard-coding an icon. The template checks `hasCodeConnect()` to decide this. The Figma Code Connect skill advises against that check, because without it Figma still outputs code for unconnected instances. Here that output would be a hard-coded icon, which is what the brief ruled out.
+
+**The snippet imports from the package name, `else-testds`.** For that to resolve, `src/index.ts` now exports Card and its prop types, and `package.json` has `"exports": { ".": "./src/index.ts" }`. Inside the repo, the import resolves for TypeScript and Vite. This was checked by switching the Card story to `import { Card } from 'else-testds'`, then running the typecheck and a Storybook build (both passed), before switching it back. Each new component has to be added to `src/index.ts`.
+
+**Distribution is an open decision.** The entry point points at TypeScript source, so the package name only works inside this repo. Other projects can't install it yet. That would need a library build to `dist/` with `.d.ts` types, React as a peer dependency, and a way to ship `tokens.css` and `base.css` with the components. `private: true` would also need to change, or the package would go to a private registry. How the design system is distributed hasn't been decided.
+
+**The Figma token is read from `.env`.** The CLI reads `FIGMA_ACCESS_TOKEN` from the environment and doesn't load `.env` itself, so the publish command loads it first. `.env` is gitignored.
+
+## 2026-11-25: Icon components and Code Connect
+
+**Icons are now React components, one per icon, generated from the SVGs.** The SVGs moved from `src/stories/icons/` to `src/icons/svg/`, and they're the single source. `npm run icons` (`scripts/icons/build-icons.mjs`) turns each one into a component in `src/icons/generated/`, such as `MiniGolfIcon20`, plus a Code Connect template for it. It also writes an index, which `src/index.ts` re-exports, and a catalog the Storybook pages use. The old `src/stories/icons/icons.tsx` helper is gone. The Card's Choose icon control and the Icons page now render the components.
+
+**Names come from Figma, recorded in `src/icons/figma.json`.** Each SVG is listed with its Figma name and node ID (read from the Icons page, node 1:69). The component name is the Figma name with the size moved to the end: `20px / American-football` becomes `AmericanFootballIcon20`. Any size prefix works, so a `16px / Tennis` would become `TennisIcon16`, a separate component. Before, Figma names were rebuilt from file names, which only worked for names with one capital letter. The script now stops if a file name doesn't match its Figma name, if an SVG isn't in `figma.json` (or the other way round), or if two icons would get the same component name.
+
+**The script makes the three hand edits.** It removes a background rectangle the size of the icon, changes fixed fill and stroke colours to `currentColor`, and strips `id`s. It stops, and writes nothing, if an icon doesn't fit that pattern: more than one colour (`currentColor` would flatten them), gradients, masks, clip paths, opacity, `style` attributes, text, or a size that doesn't match its name. All 12 current icons pass. Tested with:
+
+- **Fresh exports from Figma's API** (`svg_include_id=true`): every icon had layer IDs and `#282A30` strokes, which is `icon/strong` resolved in light mode. Bowling also had `#282A30` fills. None had a background rectangle. After cleaning, 9 matched the repo files exactly. Boxing and American football differ by rounding in the last decimal place (14.7727 vs 14.7728) and render pixel-identical. Football's outer circle is now exported as several arcs instead of one closed curve. It renders with only anti-aliasing differences along the circle (0.38% of its ink at 8×), so the repo file was kept.
+- **Synthetic broken files:** a background rectangle was removed, and a second colour, a wrong size, and a clip path with opacity were each reported as problems.
+
+The API export added no background rectangle, so the one in the October exports probably came from a different export method. The script still removes one, in case a future export adds it.
+
+**Hidden from screen readers by default.** Every icon takes one prop, `label`. Without it the SVG has `aria-hidden="true"`. With it, it gets `role="img"` and `aria-label`, for an icon that means something on its own. No other props are passed through yet (`className`, `style`, size). The Card sizes and colours its icon from the slot around it.
+
+**Code Connect.** Each icon's template outputs `<MiniGolfIcon20 />` with `import { MiniGolfIcon20 } from "else-testds"`, linked to its Figma component. `label` isn't in the snippet: Figma has no property for it, and the Card hides its icon from screen readers anyway. The Card template already used the icon's snippet when the swapped icon was connected, so it needed no change.
+
+**Not in CLAUDE.md yet.** The repo structure doesn't list `src/icons/` or `scripts/icons/`, or say that icons are generated.
+
+**Published and checked.** The Card and all 12 icons are published to Figma. Figma's Card snippet now reads `chooseIcon={<PlaceholderIcon20 />}` with both imports from `else-testds`, and reports nothing in the Card as unconnected. Asking Figma about the whole Icons page (node 1:69) returns "No published components found", although each icon on it shows its mapping when checked one by one.
+
+**Checks before committing:** lint, typecheck and the Storybook build pass. The build warns that some chunks are over 500 kB, which is Storybook's own bundle. axe-core (the engine behind the a11y addon) was run on every story in light and dark, and on the Card with Hover switched on: 20 runs. The only violation is the known one: description text on the light Hover background is 4.49:1, below AA's 4.5:1 (see the Card entry). It isn't caused by the icon change, and the fix belongs in Figma. There's no story for an icon with a `label`, so axe hasn't checked the labelled case.

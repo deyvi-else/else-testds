@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Icon, iconSizes, iconsOfSize, type IconAsset } from '../icons/icons';
+import { iconCatalog, type IconEntry } from '../../icons/generated/catalog';
 import { Page, Section, Table, useRenderedSize, type Column } from './docs';
 import styles from './docs.module.css';
 
@@ -11,18 +11,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Every size prefix in use, smallest first (the catalog is sorted by size) */
+const iconSizes = [...new Set(iconCatalog.map((icon) => icon.size))];
+
 /**
  * The icon at its own size, with its measured size in the browser. Both wrappers fit the SVG
  * exactly, so one measures the width and the other the height.
  */
-const Sample = ({ icon }: { icon: IconAsset }) => {
+const Sample = ({ icon: { Icon } }: { icon: IconEntry }) => {
   const [ref, width] = useRenderedSize<HTMLSpanElement>('width');
   const [heightRef, height] = useRenderedSize<HTMLSpanElement>('height');
   return (
     <div className={styles.stack}>
       <span ref={ref} className={styles.icon}>
         <span ref={heightRef} className={styles.icon}>
-          <Icon icon={icon} />
+          <Icon />
         </span>
       </span>
       <span className={styles.subtle}>
@@ -32,10 +35,11 @@ const Sample = ({ icon }: { icon: IconAsset }) => {
   );
 };
 
-const columns: Column<IconAsset>[] = [
+const columns: Column<IconEntry>[] = [
   { header: 'Icon', cell: (icon) => <Sample icon={icon} /> },
   { header: 'Figma name', cell: (icon) => icon.figmaName },
-  { header: 'File', cell: (icon) => <code className={styles.code}>{icon.file}</code> },
+  { header: 'Component', cell: (icon) => <code className={styles.code}>{icon.component}</code> },
+  { header: 'Source file', cell: (icon) => <code className={styles.code}>{icon.file}</code> },
 ];
 
 export const Icons: Story = {
@@ -45,8 +49,14 @@ export const Icons: Story = {
       intro={
         <>
           <p>
-            Every icon on the Figma Icons page, exported as SVG to <code className={styles.code}>src/stories/icons/</code>{' '}
-            and named after its Figma name. Icons are grouped by the size at the start of their name.
+            Every icon on the Figma Icons page, exported as SVG to <code className={styles.code}>src/icons/svg/</code>{' '}
+            and named after its Figma name. <code className={styles.code}>npm run icons</code> turns each one into a
+            React component named after the Figma name with the size at the end, so 20px / Mini-golf becomes{' '}
+            <code className={styles.code}>MiniGolfIcon20</code>. Icons are grouped by the size at the start of their name.
+          </p>
+          <p>
+            Icons are hidden from screen readers unless they&apos;re given a <code className={styles.code}>label</code>,
+            for an icon that means something on its own.
           </p>
           <p>
             Icons have no colour of their own: in Figma they use{' '}
@@ -60,7 +70,7 @@ export const Icons: Story = {
     >
       {iconSizes.map((size) => (
         <Section key={size} title={size}>
-          <Table caption={`${size} icons`} columns={columns} rows={iconsOfSize(size)} />
+          <Table caption={`${size} icons`} columns={columns} rows={iconCatalog.filter((icon) => icon.size === size)} />
         </Section>
       ))}
     </Page>
