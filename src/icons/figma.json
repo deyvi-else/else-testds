@@ -1,0 +1,18 @@
+{
+  "$description": "Each SVG in src/icons/svg/ and the Figma icon component it was exported from (Icons page, node 1:69). Used by scripts/icons/build-icons.mjs for component names and Code Connect links",
+  "fileUrl": "https://www.figma.com/design/kDoLf0s6Vdeg8dS8cgi1ro/Test-design-system",
+  "icons": {
+    "20px-american-football.svg": { "figmaName": "20px / American-football", "nodeId": "2:3026" },
+    "20px-archery.svg": { "figmaName": "20px / Archery", "nodeId": "1:74" },
+    "20px-basketball.svg": { "figmaName": "20px / Basketball", "nodeId": "2:3022" },
+    "20px-bowling.svg": { "figmaName": "20px / Bowling", "nodeId": "2:2940" },
+    "20px-boxing.svg": { "figmaName": "20px / Boxing", "nodeId": "2:2952" },
+    "20px-cycling.svg": { "figmaName": "20px / Cycling", "nodeId": "2:2859" },
+    "20px-football.svg": { "figmaName": "20px / Football", "nodeId": "2:3030" },
+    "20px-mini-golf.svg": { "figmaName": "20px / Mini-golf", "nodeId": "2:2962" },
+    "20px-placeholder.svg": { "figmaName": "20px / Placeholder", "nodeId": "4:66" },
+    "20px-running.svg": { "figmaName": "20px / Running", "nodeId": "2:2872" },
+    "20px-swimming.svg": { "figmaName": "20px / Swimming", "nodeId": "2:2891" },
+    "20px-tennis.svg": { "figmaName": "20px / Tennis", "nodeId": "2:3038" }
+  }
+}

@@ -1,12 +1,15 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
-import { Icon, iconsOfSize } from '../../stories/icons/icons';
+import { iconCatalog } from '../../icons/generated/catalog';
 import { Card } from './Card';
 
 // The card's icon slot is 20px, so only icons whose Figma name starts with "20px" are offered.
-// Labels repeat the part of the Figma name after "20px / ", e.g. Mini-golf
-const slotIcons = iconsOfSize('20px');
-const icons = Object.fromEntries(slotIcons.map((icon) => [icon.id, <Icon icon={icon} />]));
-const iconLabels = Object.fromEntries(slotIcons.map((icon) => [icon.id, icon.name]));
+// Options are the icon components, e.g. MiniGolfIcon20. Labels repeat the part of the Figma
+// name after "20px / ", e.g. Mini-golf
+const slotIcons = iconCatalog.filter((icon) => icon.size === '20px');
+const icons = Object.fromEntries(slotIcons.map(({ component, Icon }) => [component, <Icon />]));
+const iconLabels = Object.fromEntries(
+  slotIcons.map(({ component, figmaName }) => [component, figmaName.replace(/^\d+px \/ /, '')]),
+);
 
 // Paints the page background so the card's transparent fill sits on it, as in Figma.
 // The padding matches the 20px around the variants in the Figma component set.
@@ -35,7 +38,7 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   args: {
     // Figma's default for Choose icon
-    chooseIcon: 'placeholder',
+    chooseIcon: 'PlaceholderIcon20',
     titleText: 'Title',
     descriptionText: 'Description which can span across multiple lines until it eventually truncates.',
     href: '#',
