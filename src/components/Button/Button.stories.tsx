@@ -25,11 +25,13 @@ const meta = {
     // Figma's default for Label
     label: 'Label',
   },
-  // Labels match the Figma property names. type and className are HTML attributes with no Figma
-  // property, so they're hidden from the controls
+  // Labels match the Figma property names. href isn't in Figma: fill it in to render the button as
+  // a link, which looks the same. type and className are HTML attributes with no Figma property,
+  // so they're hidden from the controls
   argTypes: {
     label: { name: 'Label' },
     variant: { name: 'Variant', control: 'inline-radio', options: ['primary', 'secondary'] },
+    href: { name: 'Link destination', control: 'text' },
     type: { table: { disable: true } },
     className: { table: { disable: true } },
   },

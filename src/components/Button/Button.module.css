@@ -16,6 +16,9 @@
   border-radius: var(--testds-primitive-border-radius-1);
   white-space: nowrap;
 
+  /* With href the button is an <a>: remove the browser's link underline. Not a design value */
+  text-decoration: none;
+
   /* Figma: Label, body/100/bold. Font family is the primitive the text style is bound to */
   font-family: var(--testds-primitive-font-family-sans);
   font-size: var(--testds-typography-body-100-bold-font-size);
