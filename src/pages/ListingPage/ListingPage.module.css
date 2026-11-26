@@ -1,0 +1,154 @@
+/*
+ * Figma: Listing page (108:81). Page-level layout only: Card and Button are used as they are.
+ * Built for the designed width (1440px frame, 1024px content). No breakpoints, as none are designed.
+ */
+
+/* Figma: Listing page. Vertical auto layout, children centred, fill background/primary */
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--testds-semantic-color-background-primary);
+}
+
+/*
+ * Figma: Navigation. Fill width, space between, centred. Padding 16 24, bound to space/5 and space/7.
+ * Bottom stroke: border/standard, 1px. The weight isn't bound to a variable in Figma; it matches
+ * border/width/1. The stroke is Outside, so in Figma it doesn't add to the 64px height. The negative
+ * margin does the same here: the border draws over the first pixel below, and the content starts at 64px.
+ * Figma clips content.
+ */
+.navigation {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--testds-primitive-space-5) var(--testds-primitive-space-7);
+  border-bottom: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-standard);
+  margin-bottom: calc(-1 * var(--testds-primitive-border-width-1));
+  overflow: clip;
+}
+
+/* Figma: © Brand. headline/100, text/strong, Hug width. Removes the browser's link underline */
+.brand {
+  font-family: var(--testds-primitive-font-family-sans);
+  font-size: var(--testds-typography-headline-100-font-size);
+  font-weight: var(--testds-typography-headline-100-font-weight);
+  line-height: var(--testds-typography-headline-100-line-height);
+  letter-spacing: var(--testds-typography-headline-100-letter-spacing);
+  color: var(--testds-semantic-color-text-strong);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Figma: Button group. Horizontal, gap 8 bound to space/3. Removes the browser's list styles */
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--testds-primitive-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Figma: Page content. Fill width up to a max width of 1024px, centred by the page.
+ * Padding top and bottom 48 and gap 48, bound to space/10. No side padding.
+ * The 1024px max width isn't bound to a variable and there's no size token for it.
+ */
+.content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--testds-primitive-space-10);
+  width: 100%;
+  max-width: 1024px;
+  padding: var(--testds-primitive-space-10) 0;
+}
+
+/*
+ * Figma: Header (page and section). Padding left and right 24 (space/7), plus a 1px border/invisible
+ * stroke on the left and right (border/width/1). Together they put the text 25px in, in line with the
+ * card text (row padding 4 + card border 1 + card padding 20).
+ */
+.header,
+.sectionHeader {
+  padding: 0 var(--testds-primitive-space-7);
+  border-inline: var(--testds-primitive-border-width-1) solid var(--testds-semantic-color-border-invisible);
+}
+
+/* Figma: Header. Vertical, gap 12 bound to space/4 */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--testds-primitive-space-4);
+}
+
+/*
+ * Figma: Sports. headline/300, text/strong. Fill width with a max width of 640px.
+ * The 640px max width isn't bound to a variable and there's no size token for it.
+ */
+.title {
+  align-self: stretch;
+  max-width: 640px;
+  margin: 0;
+  font-family: var(--testds-primitive-font-family-sans);
+  font-size: var(--testds-typography-headline-300-font-size);
+  font-weight: var(--testds-typography-headline-300-font-weight);
+  line-height: var(--testds-typography-headline-300-line-height);
+  letter-spacing: var(--testds-typography-headline-300-letter-spacing);
+  color: var(--testds-semantic-color-text-strong);
+}
+
+/* Figma: description. body/200, text/subtle. Hug width with a max width of 640px (unbound, as above) */
+.description {
+  max-width: 640px;
+  margin: 0;
+  font-family: var(--testds-primitive-font-family-sans);
+  font-size: var(--testds-typography-body-200-font-size);
+  font-weight: var(--testds-typography-body-200-font-weight);
+  line-height: var(--testds-typography-body-200-line-height);
+  letter-spacing: var(--testds-typography-body-200-letter-spacing);
+  color: var(--testds-semantic-color-text-subtle);
+}
+
+/* Figma: Section. Vertical, gap 24 bound to space/7 */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--testds-primitive-space-7);
+}
+
+/* Figma: section title. headline/200, text/strong */
+.sectionTitle {
+  margin: 0;
+  font-family: var(--testds-primitive-font-family-sans);
+  font-size: var(--testds-typography-headline-200-font-size);
+  font-weight: var(--testds-typography-headline-200-font-weight);
+  line-height: var(--testds-typography-headline-200-line-height);
+  letter-spacing: var(--testds-typography-headline-200-letter-spacing);
+  color: var(--testds-semantic-color-text-strong);
+}
+
+/*
+ * Figma: Row. Grid of 4 equal (flex 1) columns, rows hug. Column and row gap 16 (space/5),
+ * padding left and right 4 (space/2). minmax(0, 1fr) keeps the columns equal even when a card's
+ * content is wider than its share. Removes the browser's list styles
+ */
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--testds-primitive-space-5);
+  margin: 0;
+  padding: 0 var(--testds-primitive-space-2);
+  list-style: none;
+}
+
+/*
+ * Figma: Card instances are Fill width and Fill height in their cell, so cards in a row are equal height.
+ * The list item is a one-cell grid, so the Card stretches to the full cell without restyling it
+ */
+.cell {
+  display: grid;
+}

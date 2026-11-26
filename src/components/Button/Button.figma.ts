@@ -14,6 +14,9 @@ const variant = instance.getEnum('Variant', {
 // Interaction state isn't mapped: it's a CSS state (:hover), not a prop. See CLAUDE.md.
 // variant is always written out, though primary is the default, so the snippet shows which one it is.
 // onClick has no Figma property, so the snippet leaves it out.
+// href has no Figma property either: Figma has one Button whether it's a link or an action, so the
+// snippet can't tell which. It shows the <button> form. Add href="..." to make it a link, which
+// looks the same (the Card's snippet does write href="#", because a Card is always a link).
 export default {
   example: figma.code`<Button label="${label}" variant="${variant}" />`,
   imports: ['import { Button } from "else-testds"'],

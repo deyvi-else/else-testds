@@ -283,3 +283,67 @@ Source: the Button component set (Figma node 93:219). The template is `src/compo
 **Checked in Figma.** All four variants (93:218, 93:499, 93:515, 93:517) are mapped to `src/components/Button/Button.tsx`. Primary Default and Hover give `<Button label="Label" variant="primary" />`, Secondary Default and Hover give `variant="secondary"`, each with `import { Button } from "else-testds"`. Publishing sends every template, so the Card and icon mappings were re-sent unchanged.
 
 **Easier than the Card.** The Button has no instance swap, so there was no question of what to show for an unconnected icon. `src/index.ts` already exported the Button, so the `else-testds` import worked without changes.
+
+## 2026-11-26: Listing page
+
+Source: the Listing page frame (Figma node 108:81), read-only with the Plugin API. The code is in `src/pages/ListingPage/`, with the story `Pages/Listing` (Light and Dark, full screen). Comparisons: [listing-light.png](comparisons/listing-light.png) (Figma, Storybook, difference ×4), [listing-dark.png](comparisons/listing-dark.png) and [listing-truncation.png](comparisons/listing-truncation.png). The Button gained an optional `href` for the nav links.
+
+**Values read from Figma, and the token each maps to.**
+
+| Figma | Token / CSS |
+| --- | --- |
+| Listing page: 1440 wide, vertical auto layout, children centred, fill `background/primary` | `--testds-semantic-color-background-primary`, flex column, `align-items: center` |
+| Navigation: Fill width, space between, centred, padding 16 / 24 | `--testds-primitive-space-5`, `--testds-primitive-space-7` |
+| Navigation bottom stroke, `border/standard`, Outside | `--testds-semantic-color-border-standard` |
+| Navigation bottom stroke weight 1, **unbound** | `--testds-primitive-border-width-1` (same value), flagged |
+| Navigation clips content | `overflow: clip` |
+| © Brand: `headline/100`, `text/strong`, Hug | `--testds-typography-headline-100-*`, `--testds-semantic-color-text-strong` |
+| Button group: gap 8 | `--testds-primitive-space-3` |
+| Buttons: Contact and Register Secondary, Sign in Primary | `<Button variant="secondary" / "primary" href="#">` |
+| Page content: Fill width, **max width 1024, unbound**, centred | `max-width: 1024px` hard-coded, flagged |
+| Page content: padding top and bottom 48, gap 48; no side padding | `--testds-primitive-space-10` |
+| Header: vertical, gap 12 | `--testds-primitive-space-4` |
+| Header and section headers: padding left and right 24, plus a 1px left and right stroke in `border/invisible` | `--testds-primitive-space-7`, `--testds-primitive-border-width-1`, `--testds-semantic-color-border-invisible` |
+| Sports: `headline/300`, `text/strong`, Fill width, **max width 640, unbound** | `--testds-typography-headline-300-*`, `max-width: 640px` hard-coded, flagged |
+| Description: `body/200`, `text/subtle`, Hug, **max width 640, unbound** | `--testds-typography-body-200-*`, `--testds-semantic-color-text-subtle`, flagged |
+| Section: vertical, gap 24 | `--testds-primitive-space-7` |
+| Section title: `headline/200`, `text/strong` | `--testds-typography-headline-200-*` |
+| Row: grid, 4 columns of flex 1, 1 row Hug, row and column gap 16, padding left and right 4 | `repeat(4, minmax(0, 1fr))`, `--testds-primitive-space-5`, `--testds-primitive-space-2` |
+| Cards: Fill width and Fill height in their cell | Grid stretch (the list item is a one-cell grid) |
+| Every text style's family is bound to `font/family/sans` | `--testds-primitive-font-family-sans` |
+
+The design context output showed the grid gap as a raw `16px`, but the Plugin API shows `gridRowGap` and `gridColumnGap` bound to `space/5`. Reading bindings with the Plugin API rather than trusting the generated code caught this.
+
+**Measured in headless Edge at 1440px, device scale 1, both themes (Figma in brackets).** Page height 1353 (1353). Nav 64 to the content, plus the 1px border drawn over the first pixel of the content, as Figma's Outside stroke is (64, stroke outside). Nav padding 16/24 (16/24). Brand at 24, 20 (24, 20). Content 1024 wide at x 208 (1024 at 208), top padding 48 (48). Header at y 112 (112), gap 12 (title 44 high, description at 168: 168). Sections at y 240, 618 and 996 (240, 618, 996), so 48 between them (48). Section header to grid 24 (24). Grid gaps 16 (16), padding 4 (4). Cards 242 × 278, 242 × 278 and 242 × 257 (same), at x 212, 470, 728, 986 (212, 470, 728, 986). Heading text, section titles and card titles all start at x 233, which is 25px in from the content edge (233). Button widths differ by under 1px (73.08, 75.27, 66.16 against 74, 76, 66), from Inter 4 against Figma's Inter 3 (see the Card entry). The light difference image only shows letter edges: 1.7% of pixels differ by more than 8 levels, and sampled fills, the nav border and card borders are identical.
+
+**Truncation matches.** Basketball and Swimming cut off after the same three lines, ending on "incididunt". The browser keeps the space before the ellipsis ("incididunt …") where Figma drops it ("incididunt…"). That's the browser's `line-clamp`, inside the Card, so it wasn't changed from the page.
+
+**Dark mode was compared against Figma's variables, not a Figma render**, as with the Button: rendering dark in Figma means setting a variable mode, which is a change to the file. Sampled in Storybook: page `#08090a` (`neutral/8`), nav border `#232425` (white 11% over `#08090a`), card `#151616` (white 5%), card border `#2f3030` (white 11% over the card). All match the token maths to within one level.
+
+**Below 1024px.** No breakpoints were added, as none are designed. From 1023px the content fills the viewport with no side margin (Figma's Page content has no side padding; the margin at 1440 comes only from centring), so cards sit 4px from the window edge and headings 25px. It first breaks at **906px**, where Football's description no longer fits in three lines and starts to truncate. At 740px every description truncates, at 732px "American football" wraps to two lines (making the Ball row 24px taller than the others), at 499px the cards stop shrinking (the longest words set a minimum width) and the page scrolls sideways, and at 346px the brand touches the nav buttons.
+
+**Heading levels nest.** The Card's title renders as `h3` by default, so the page is `h1` Sports > `h2` section > `h3` card, with no change to the Card. Each section is a `<section>` labelled by its `h2`, and the cards are a list.
+
+**Button with `href`.** With `href` the Button renders an `<a>` with the same classes. The only CSS added is `text-decoration: none`. Computed styles match the `<button>` in every property checked, apart from the browser's own cursor (pointer on links). The Code Connect snippet is unchanged: Figma has one Button for both, so it can't tell a link from an action. The template's comment says to add `href`. It wasn't republished, because the brief was read-only in Figma.
+
+**Checks.** Lint, typecheck, the Storybook build (usual chunk size warning) and `tokens:check` (69 of 69 in each mode) pass. axe-core found no violations on the page in light and dark, or on the Button as a button and as a link, Primary and Secondary, in both themes. Hover wasn't switched on, so the known Secondary Hover and Card Hover contrast issue (4.49:1) still applies to the nav links and cards.
+
+**What a page needed that a component didn't:**
+
+- **Layout values with no token.** The 1024px content width and 640px text width aren't bound to variables, and there are no size tokens. CLAUDE.md says to flag rather than hard-code, but the brief asked for the 1024px width, so both are hard-coded in the page CSS with a comment, and flagged. A size or layout token collection would remove this.
+- **Unbound values hide in places a component doesn't have.** The nav stroke weight was the only unbound value on a stroke. It equals `border/width/1`, so the token was used and the gap flagged.
+- **Outside strokes.** Figma's Outside stroke doesn't add to the frame's size, but a CSS border does. A negative margin of the border width keeps the nav at 64px and the content in place. Components so far only had Inside strokes.
+- **Invisible borders for alignment.** The headers use a 1px `border/invisible` stroke purely so their text lines up with card text (4 + 1 + 20 = 25). It's reproduced as a real transparent border so the alignment follows the tokens.
+- **Fill height in a grid cell.** Equal-height cards come from the grid, not the Card. Wrapping each card in a list item meant making the list item a one-cell grid so the card still stretches, without restyling the Card.
+- **Resetting list styles.** `ul` for the nav and rows needs `margin: 0`, `padding: 0` and `list-style: none`, like the button resets.
+- **Responsive behaviour isn't designed.** A component's width comes from its container; a page meets the window. Figma gives one width, so what happens below it had to be measured and reported rather than built.
+- **Measuring needs a real 1:1 browser.** The desktop app's browser pane scales its viewport, so 1px borders measured 0.8px. Measurements and screenshots were taken in headless Edge at device scale 1 over the DevTools protocol instead (one-off scripts, not in the repo).
+
+**Rules CLAUDE.md could gain:**
+
+- Where pages live (`src/pages/<Name>/`), that they aren't exported from `src/index.ts`, and that page-level layout (navigation, headers, grids) stays in the page's CSS Module.
+- How to handle layout values with no token (max widths, column counts): allowed in page CSS with a comment naming the Figma value, until size tokens exist.
+- Figma Outside strokes: draw them without changing layout size (negative margin or similar).
+- Pages are built at their Figma width only, unless breakpoints are designed, and the brief reports where they first break.
+- Page stories: one per theme, full screen, rather than the Theme toolbar alone, so both can be linked and checked.
+- Button: with `href` it's a link, otherwise a button. Use a link for navigation.
