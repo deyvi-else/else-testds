@@ -286,7 +286,7 @@ Source: the Button component set (Figma node 93:219). The template is `src/compo
 
 ## 2026-11-26: Listing page
 
-Source: the Listing page frame (Figma node 108:81), read-only with the Plugin API. The code is in `src/pages/ListingPage/`, with the story `Pages/Listing` (Light and Dark, full screen). Comparisons: [listing-light.png](comparisons/listing-light.png) (Figma, Storybook, difference ×4), [listing-dark.png](comparisons/listing-dark.png) and [listing-truncation.png](comparisons/listing-truncation.png). The Button gained an optional `href` for the nav links.
+Source: the Listing page frame (Figma node 108:81), read-only with the Plugin API. The code is in `src/pages/ListingPage/`, with the story `Pages/Listing` (one Default story, full screen; themes from the Theme toolbar). Comparisons: [listing-light.png](comparisons/listing-light.png) (Figma, Storybook, difference ×4), [listing-dark.png](comparisons/listing-dark.png) and [listing-truncation.png](comparisons/listing-truncation.png). The Button gained an optional `href` for the nav links.
 
 **Values read from Figma, and the token each maps to.**
 
@@ -345,5 +345,7 @@ The design context output showed the grid gap as a raw `16px`, but the Plugin AP
 - How to handle layout values with no token (max widths, column counts): allowed in page CSS with a comment naming the Figma value, until size tokens exist.
 - Figma Outside strokes: draw them without changing layout size (negative margin or similar).
 - Pages are built at their Figma width only, unless breakpoints are designed, and the brief reports where they first break.
-- Page stories: one per theme, full screen, rather than the Theme toolbar alone, so both can be linked and checked.
+- Page stories: one Default story, full screen, with themes from the Theme toolbar, like the components. Link to dark with `&globals=theme:dark` in the URL.
+
+**One story instead of Light and Dark.** The first version had a Light and a Dark story, each setting `globals: { theme }`. A story that sets a global locks it, so Storybook greyed out the Theme toolbar on both. They were replaced with one Default story that leaves the theme to the toolbar. The measurements, comparisons and axe runs above were made with the two stories; the rendered page is the same.
 - Button: with `href` it's a link, otherwise a button. Use a link for navigation.
